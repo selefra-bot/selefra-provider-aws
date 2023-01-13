@@ -68,10 +68,8 @@ func (x *TableAwsApigatewayv2ApiDeploymentsGenerator) GetExpandClientTask() func
 
 func (x *TableAwsApigatewayv2ApiDeploymentsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("api_id").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.ParentColumnValue("id")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("api_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
 
@@ -99,20 +97,28 @@ func (x *TableAwsApigatewayv2ApiDeploymentsGenerator) GetColumns() []*schema.Col
 					Resource:	strings.Join(ids, "/"),
 				}.String(), nil
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("auto_deployed").ColumnType(schema.ColumnTypeBool).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("deployment_status").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
-			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("auto_deployed").ColumnType(schema.ColumnTypeBool).
+			Extractor(column_value_extractor.StructSelector("AutoDeployed")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("created_date").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("CreatedDate")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("api_arn").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("created_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("deployment_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("deployment_status_message").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("api_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.ParentColumnValue("id")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("deployment_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DeploymentId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("deployment_status").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DeploymentStatus")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("deployment_status_message").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DeploymentStatusMessage")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Description")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("aws_apigatewayv2_apis_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_apigatewayv2_apis.selefra_id").
 			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 	}
 }
 

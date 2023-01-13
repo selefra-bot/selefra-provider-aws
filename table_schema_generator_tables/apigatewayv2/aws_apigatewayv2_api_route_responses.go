@@ -72,6 +72,10 @@ func (x *TableAwsApigatewayv2ApiRouteResponsesGenerator) GetColumns() []*schema.
 	return []*schema.Column{
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("api_route_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
 
@@ -102,21 +106,22 @@ func (x *TableAwsApigatewayv2ApiRouteResponsesGenerator) GetColumns() []*schema.
 					Resource:	strings.Join(ids, "/"),
 				}.String(), nil
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("response_models").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("aws_apigatewayv2_api_routes_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_apigatewayv2_api_routes.selefra_id").
-			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("response_parameters").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("route_response_id").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("route_response_key").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RouteResponseKey")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("response_parameters").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ResponseParameters")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("route_response_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RouteResponseId")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
 			Extractor(column_value_extractor.UUID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("api_route_arn").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("aws_apigatewayv2_api_routes_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_apigatewayv2_api_routes.selefra_id").
+			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("route_id").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.ParentColumnValue("route_id")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("route_response_key").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("model_selection_expression").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("model_selection_expression").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ModelSelectionExpression")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("response_models").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ResponseModels")).Build(),
 	}
 }
 

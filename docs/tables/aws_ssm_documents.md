@@ -11,40 +11,40 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| review_status | string | X | √ |  | 
+| tags | json | X | √ |  | 
+| platform_types | string_array | X | √ |  | 
+| sha1 | string | X | √ |  | 
+| requires | json | X | √ |  | 
 | version_name | string | X | √ |  | 
-| document_type | string | X | √ |  | 
-| hash_type | string | X | √ |  | 
-| pending_review_version | string | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
+| status_information | string | X | √ |  | 
+| account_id | string | X | √ |  | 
 | arn | string | √ | √ |  | 
+| permissions | json | X | √ |  | 
+| hash_type | string | X | √ |  | 
+| latest_version | string | X | √ |  | 
+| parameters | json | X | √ |  | 
+| pending_review_version | string | X | √ |  | 
+| attachments_information | json | X | √ |  | 
+| review_status | string | X | √ |  | 
+| status | string | X | √ |  | 
+| schema_version | string | X | √ |  | 
+| approved_version | string | X | √ |  | 
 | created_date | timestamp | X | √ |  | 
-| document_format | string | X | √ |  | 
 | default_version | string | X | √ |  | 
 | description | string | X | √ |  | 
 | display_name | string | X | √ |  | 
-| schema_version | string | X | √ |  | 
-| region | string | X | √ |  | 
-| tags | json | X | √ |  | 
-| approved_version | string | X | √ |  | 
-| author | string | X | √ |  | 
-| hash | string | X | √ |  | 
-| sha1 | string | X | √ |  | 
-| owner | string | X | √ |  | 
-| status | string | X | √ |  | 
-| account_id | string | X | √ |  | 
-| category | string_array | X | √ |  | 
 | document_version | string | X | √ |  | 
-| permissions | json | X | √ |  | 
-| latest_version | string | X | √ |  | 
-| requires | json | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
-| parameters | json | X | √ |  | 
+| name | string | X | √ |  | 
+| region | string | X | √ |  | 
+| author | string | X | √ |  | 
+| category_enum | string_array | X | √ |  | 
+| document_format | string | X | √ |  | 
+| hash | string | X | √ |  | 
+| category | string_array | X | √ |  | 
+| document_type | string | X | √ |  | 
+| owner | string | X | √ |  | 
 | review_information | json | X | √ |  | 
 | target_type | string | X | √ |  | 
-| platform_types | string_array | X | √ |  | 
-| status_information | string | X | √ |  | 
-| attachments_information | json | X | √ |  | 
-| category_enum | string_array | X | √ |  | 
-| name | string | X | √ |  | 
 
 

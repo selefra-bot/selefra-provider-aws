@@ -11,29 +11,29 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| account_id | string | X | √ |  | 
 | arn | string | √ | √ |  | 
-| evaluation_metrics | json | X | √ |  | 
 | glue_version | string | X | √ |  | 
-| input_record_tables | json | X | √ |  | 
+| number_of_workers | big_int | X | √ |  | 
 | parameters | json | X | √ |  | 
-| transform_encryption | json | X | √ |  | 
-| transform_id | string | X | √ |  | 
-| region | string | X | √ |  | 
-| label_count | int | X | √ |  | 
-| last_modified_on | timestamp | X | √ |  | 
-| name | string | X | √ |  | 
 | role | string | X | √ |  | 
-| timeout | int | X | √ |  | 
-| tags | json | X | √ |  | 
-| schema | json | X | √ |  | 
-| description | string | X | √ |  | 
-| max_capacity | float | X | √ |  | 
-| max_retries | int | X | √ |  | 
-| number_of_workers | int | X | √ |  | 
 | status | string | X | √ |  | 
+| transform_id | string | X | √ |  | 
 | worker_type | string | X | √ |  | 
-| created_on | timestamp | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
+| region | string | X | √ |  | 
+| tags | json | X | √ |  | 
+| created_on | timestamp | X | √ |  | 
+| evaluation_metrics | json | X | √ |  | 
+| label_count | big_int | X | √ |  | 
+| name | string | X | √ |  | 
+| timeout | big_int | X | √ |  | 
+| account_id | string | X | √ |  | 
+| schema | json | X | √ |  | 
+| last_modified_on | timestamp | X | √ |  | 
+| max_capacity | float | X | √ |  | 
+| description | string | X | √ |  | 
+| input_record_tables | json | X | √ |  | 
+| max_retries | big_int | X | √ |  | 
+| transform_encryption | json | X | √ |  | 
 
 

@@ -2,8 +2,10 @@ package waf
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/waf"
 	"github.com/aws/aws-sdk-go-v2/service/waf/types"
 	"github.com/selefra/selefra-provider-aws/aws_client"
@@ -83,7 +85,13 @@ func (x *TableAwsWafRuleGroupsGenerator) GetColumns() []*schema.Column {
 				extractor := func() (any, error) {
 					cl := client.(*aws_client.Client)
 					ruleGroup := result.(*types.RuleGroup)
-					return cl.ARN("waf", "rulegroup", aws.ToString(ruleGroup.RuleGroupId)), nil
+					return arn.ARN{
+						Partition:	cl.Partition,
+						Service:	"waf",
+						Region:		cl.Region,
+						AccountID:	cl.AccountID,
+						Resource:	fmt.Sprintf("rulegroup/%s", aws.ToString(ruleGroup.RuleGroupId)),
+					}.String(), nil
 				}
 				extractResultValue, err := extractor()
 				if err != nil {
@@ -127,8 +135,12 @@ func (x *TableAwsWafRuleGroupsGenerator) GetColumns() []*schema.Column {
 					return extractResultValue, nil
 				}
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("rule_group_id").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("rule_group_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RuleGroupId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("metric_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("MetricName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Name")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).

@@ -29,11 +29,7 @@ func (x *TableAwsIamOpenidConnectIdentityProvidersGenerator) GetVersion() uint64
 }
 
 func (x *TableAwsIamOpenidConnectIdentityProvidersGenerator) GetOptions() *schema.TableOptions {
-	return &schema.TableOptions{
-		PrimaryKeys: []string{
-			"arn",
-		},
-	}
+	return &schema.TableOptions{}
 }
 
 func (x *TableAwsIamOpenidConnectIdentityProvidersGenerator) GetDataSource() *schema.DataSource {
@@ -72,18 +68,15 @@ func (x *TableAwsIamOpenidConnectIdentityProvidersGenerator) GetExpandClientTask
 
 func (x *TableAwsIamOpenidConnectIdentityProvidersGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Arn")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("client_id_list").ColumnType(schema.ColumnTypeStringArray).
-			Extractor(column_value_extractor.StructSelector("ClientIDList")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("thumbprint_list").ColumnType(schema.ColumnTypeStringArray).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("url").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("create_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("get_open_id_connect_provider_output").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("GetOpenIDConnectProviderOutput")).Build(),
 	}
 }
 

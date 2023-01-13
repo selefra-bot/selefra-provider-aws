@@ -44,7 +44,7 @@ func (x *TableAwsIotBillingGroupsGenerator) GetDataSource() *schema.DataSource {
 			}
 			c := client.(*aws_client.Client)
 
-			svc := c.AwsServices().IOT
+			svc := c.AwsServices().Iot
 			for {
 				response, err := svc.ListBillingGroups(ctx, &input)
 				if err != nil {
@@ -80,18 +80,23 @@ func (x *TableAwsIotBillingGroupsGenerator) GetExpandClientTask() func(ctx conte
 
 func (x *TableAwsIotBillingGroupsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("billing_group_metadata").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("billing_group_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("BillingGroupArn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("billing_group_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("billing_group_properties").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("version").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("billing_group_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("BillingGroupArn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("billing_group_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("BillingGroupId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("billing_group_properties").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("BillingGroupProperties")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("version").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("Version")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ResultMetadata")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("things_in_group").ColumnType(schema.ColumnTypeStringArray).
@@ -101,10 +106,10 @@ func (x *TableAwsIotBillingGroupsGenerator) GetColumns() []*schema.Column {
 				extractor := func() (any, error) {
 					i := result.(*iot.DescribeBillingGroupOutput)
 					cl := client.(*aws_client.Client)
-					svc := cl.AwsServices().IOT
+					svc := cl.AwsServices().Iot
 					input := iot.ListThingsInBillingGroupInput{
-						BillingGroupName: i.BillingGroupName,
-						MaxResults:       aws.Int32(250),
+						BillingGroupName:	i.BillingGroupName,
+						MaxResults:		aws.Int32(250),
 					}
 
 					var things []string
@@ -130,7 +135,10 @@ func (x *TableAwsIotBillingGroupsGenerator) GetColumns() []*schema.Column {
 					return extractResultValue, nil
 				}
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("billing_group_metadata").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("BillingGroupMetadata")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("billing_group_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("BillingGroupName")).Build(),
 	}
 }
 

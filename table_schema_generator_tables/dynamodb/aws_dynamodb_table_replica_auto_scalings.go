@@ -44,7 +44,7 @@ func (x *TableAwsDynamodbTableReplicaAutoScalingsGenerator) GetDataSource() *sch
 			}
 
 			c := client.(*aws_client.Client)
-			svc := c.AwsServices().DynamoDB
+			svc := c.AwsServices().Dynamodb
 
 			output, err := svc.DescribeTableReplicaAutoScaling(ctx, &dynamodb.DescribeTableReplicaAutoScalingInput{
 				TableName: par.TableName,
@@ -71,21 +71,26 @@ func (x *TableAwsDynamodbTableReplicaAutoScalingsGenerator) GetExpandClientTask(
 
 func (x *TableAwsDynamodbTableReplicaAutoScalingsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("table_arn").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("global_secondary_indexes").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("replica_provisioned_read_capacity_auto_scaling_settings").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("replica_provisioned_write_capacity_auto_scaling_settings").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("replica_status").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("aws_dynamodb_tables_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_dynamodb_tables.selefra_id").
-			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("region_name").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("global_secondary_indexes").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("GlobalSecondaryIndexes")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RegionName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("replica_provisioned_read_capacity_auto_scaling_settings").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ReplicaProvisionedReadCapacityAutoScalingSettings")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("replica_provisioned_write_capacity_auto_scaling_settings").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ReplicaProvisionedWriteCapacityAutoScalingSettings")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("table_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("replica_status").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ReplicaStatus")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
 			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("aws_dynamodb_tables_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_dynamodb_tables.selefra_id").
+			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
 	}
 }
 

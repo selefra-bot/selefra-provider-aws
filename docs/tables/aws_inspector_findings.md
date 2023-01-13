@@ -1,36 +1,29 @@
 # Table: aws_inspector_findings
 
-## Primary Keys 
-
-```
-arn
-```
-
-
 ## Columns 
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| attributes | json | X | √ |  | 
-| service | string | X | √ |  | 
-| account_id | string | X | √ |  | 
-| description | string | X | √ |  | 
-| schema_version | int | X | √ |  | 
+| arn | string | X | √ |  | 
+| confidence | big_int | X | √ |  | 
+| schema_version | big_int | X | √ |  | 
 | title | string | X | √ |  | 
-| arn | string | √ | √ |  | 
-| user_attributes | json | X | √ |  | 
-| created_at | timestamp | X | √ |  | 
-| asset_attributes | json | X | √ |  | 
+| updated_at | timestamp | X | √ |  | 
+| severity | string | X | √ |  | 
+| selefra_id | string | √ | √ | random id | 
 | id | string | X | √ |  | 
 | indicator_of_compromise | bool | X | √ |  | 
-| numeric_severity | float | X | √ |  | 
-| service_attributes | json | X | √ |  | 
-| severity | string | X | √ |  | 
-| region | string | X | √ |  | 
-| updated_at | timestamp | X | √ |  | 
-| asset_type | string | X | √ |  | 
-| confidence | int | X | √ |  | 
 | recommendation | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
+| account_id | string | X | √ |  | 
+| region | string | X | √ |  | 
+| attributes | json | X | √ |  | 
+| user_attributes | json | X | √ |  | 
+| asset_type | string | X | √ |  | 
+| service_attributes | json | X | √ |  | 
+| created_at | timestamp | X | √ |  | 
+| asset_attributes | json | X | √ |  | 
+| description | string | X | √ |  | 
+| numeric_severity | float | X | √ |  | 
+| service | string | X | √ |  | 
 
 

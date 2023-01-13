@@ -58,18 +58,23 @@ func (x *TableAwsXrayGroupsGenerator) GetExpandClientTask() func(ctx context.Con
 
 func (x *TableAwsXrayGroupsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("GroupARN")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("filter_expression").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("FilterExpression")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("group_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("GroupName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
+			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("filter_expression").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("group_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("insights_configuration").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("group_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("GroupARN")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("insights_configuration").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("InsightsConfiguration")).Build(),
 	}
 }
 

@@ -11,13 +11,14 @@ account_id, id
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| path | string | X | √ |  | 
 | server_certificate_name | string | X | √ |  | 
 | expiration | timestamp | X | √ |  | 
+| arn | string | X | √ |  | 
+| server_certificate_id | string | X | √ |  | 
+| path | string | X | √ |  | 
 | upload_date | timestamp | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
 | account_id | string | X | √ |  | 
 | id | string | X | √ |  | 
-| arn | string | X | √ |  | 
 
 

@@ -1,27 +1,20 @@
 # Table: aws_qldb_ledgers
 
-## Primary Keys 
-
-```
-arn
-```
-
-
 ## Columns 
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
 | account_id | string | X | √ |  | 
-| region | string | X | √ |  | 
-| encryption_description | json | X | √ |  | 
 | name | string | X | √ |  | 
-| permissions_mode | string | X | √ |  | 
+| selefra_id | string | √ | √ | random id | 
 | state | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
+| region | string | X | √ |  | 
 | tags | json | X | √ | `The tags associated with the pipeline.` | 
-| arn | string | √ | √ |  | 
+| arn | string | X | √ |  | 
 | creation_date_time | timestamp | X | √ |  | 
 | deletion_protection | bool | X | √ |  | 
+| encryption_description | json | X | √ |  | 
+| permissions_mode | string | X | √ |  | 
 | result_metadata | json | X | √ |  | 
 
 

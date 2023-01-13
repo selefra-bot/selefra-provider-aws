@@ -11,18 +11,18 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| description | string | X | √ |  | 
+| connection_type | string | X | √ |  | 
+| creation_time | timestamp | X | √ |  | 
 | last_updated_by | string | X | √ |  | 
 | last_updated_time | timestamp | X | √ |  | 
-| match_criteria | string_array | X | √ |  | 
-| connection_type | string | X | √ |  | 
-| region | string | X | √ |  | 
+| name | string | X | √ |  | 
+| account_id | string | X | √ |  | 
 | arn | string | √ | √ |  | 
 | connection_properties | json | X | √ |  | 
-| creation_time | timestamp | X | √ |  | 
-| name | string | X | √ |  | 
-| physical_connection_requirements | json | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
-| account_id | string | X | √ |  | 
+| physical_connection_requirements | json | X | √ |  | 
+| region | string | X | √ |  | 
+| description | string | X | √ |  | 
+| match_criteria | string_array | X | √ |  | 
 
 

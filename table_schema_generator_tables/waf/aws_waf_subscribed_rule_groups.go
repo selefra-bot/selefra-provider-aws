@@ -32,7 +32,6 @@ func (x *TableAwsWafSubscribedRuleGroupsGenerator) GetOptions() *schema.TableOpt
 	return &schema.TableOptions{
 		PrimaryKeys: []string{
 			"account_id",
-			"rule_group_id",
 		},
 	}
 }
@@ -70,13 +69,16 @@ func (x *TableAwsWafSubscribedRuleGroupsGenerator) GetExpandClientTask() func(ct
 
 func (x *TableAwsWafSubscribedRuleGroupsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).Description("`The AWS Account ID of the resource.`").
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("rule_group_id").ColumnType(schema.ColumnTypeString).Description("`A unique identifier for a RuleGroup.`").Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("metric_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("rule_group_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RuleGroupId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("metric_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("MetricName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Name")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).Description("`The AWS Account ID of the resource.`").
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 	}
 }
 

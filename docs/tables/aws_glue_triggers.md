@@ -11,20 +11,20 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| schedule | string | X | √ |  | 
+| predicate | json | X | √ |  | 
 | type | string | X | √ |  | 
+| account_id | string | X | √ |  | 
+| event_batching_condition | json | X | √ |  | 
+| name | string | X | √ |  | 
+| schedule | string | X | √ |  | 
+| arn | string | √ | √ |  | 
 | actions | json | X | √ |  | 
 | description | string | X | √ |  | 
-| id | string | X | √ |  | 
-| name | string | X | √ |  | 
-| region | string | X | √ |  | 
-| tags | json | X | √ |  | 
-| event_batching_condition | json | X | √ |  | 
-| state | string | X | √ |  | 
-| predicate | json | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
-| account_id | string | X | √ |  | 
-| arn | string | √ | √ |  | 
 | workflow_name | string | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
+| tags | json | X | √ |  | 
+| id | string | X | √ |  | 
+| state | string | X | √ |  | 
+| region | string | X | √ |  | 
 
 

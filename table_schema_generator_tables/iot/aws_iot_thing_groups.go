@@ -44,7 +44,7 @@ func (x *TableAwsIotThingGroupsGenerator) GetDataSource() *schema.DataSource {
 			}
 			c := client.(*aws_client.Client)
 
-			svc := c.AwsServices().IOT
+			svc := c.AwsServices().Iot
 			for {
 				response, err := svc.ListThingGroups(ctx, &input)
 				if err != nil {
@@ -80,58 +80,12 @@ func (x *TableAwsIotThingGroupsGenerator) GetExpandClientTask() func(ctx context
 
 func (x *TableAwsIotThingGroupsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
+		table_schema_generator.NewColumnBuilder().ColumnName("thing_group_metadata").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ThingGroupMetadata")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ResultMetadata")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("thing_group_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("thing_group_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("version").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("things_in_group").ColumnType(schema.ColumnTypeStringArray).
-			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any,
-				task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
-
-				extractor := func() (any, error) {
-					i := result.(*iot.DescribeThingGroupOutput)
-					cl := client.(*aws_client.Client)
-					svc := cl.AwsServices().IOT
-					input := iot.ListThingsInThingGroupInput{
-						ThingGroupName: i.ThingGroupName,
-						MaxResults:     aws.Int32(250),
-					}
-
-					var things []string
-					for {
-						response, err := svc.ListThingsInThingGroup(ctx, &input)
-						if err != nil {
-							return nil, err
-						}
-
-						things = append(things, response.Things...)
-
-						if aws.ToString(response.NextToken) == "" {
-							break
-						}
-						input.NextToken = response.NextToken
-					}
-					return things, nil
-				}
-				extractResultValue, err := extractor()
-				if err != nil {
-					return nil, schema.NewDiagnostics().AddErrorColumnValueExtractor(task.Table, column, err)
-				} else {
-					return extractResultValue, nil
-				}
-			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.StructSelector("ThingGroupArn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("index_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("query_string").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("thing_group_properties").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("policies").ColumnType(schema.ColumnTypeStringArray).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any,
 				task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
@@ -139,10 +93,10 @@ func (x *TableAwsIotThingGroupsGenerator) GetColumns() []*schema.Column {
 				extractor := func() (any, error) {
 					i := result.(*iot.DescribeThingGroupOutput)
 					cl := client.(*aws_client.Client)
-					svc := cl.AwsServices().IOT
+					svc := cl.AwsServices().Iot
 					input := iot.ListAttachedPoliciesInput{
-						Target:   i.ThingGroupArn,
-						PageSize: aws.Int32(250),
+						Target:		i.ThingGroupArn,
+						PageSize:	aws.Int32(250),
 					}
 
 					var policies []string
@@ -170,9 +124,67 @@ func (x *TableAwsIotThingGroupsGenerator) GetColumns() []*schema.Column {
 					return extractResultValue, nil
 				}
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("query_version").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("status").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("thing_group_metadata").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("index_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("IndexName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("query_string").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("QueryString")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("thing_group_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ThingGroupId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
+			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("query_version").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("QueryVersion")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("status").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Status")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("thing_group_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ThingGroupArn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("thing_group_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ThingGroupName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("thing_group_properties").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ThingGroupProperties")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("things_in_group").ColumnType(schema.ColumnTypeStringArray).
+			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any,
+				task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
+
+				extractor := func() (any, error) {
+					i := result.(*iot.DescribeThingGroupOutput)
+					cl := client.(*aws_client.Client)
+					svc := cl.AwsServices().Iot
+					input := iot.ListThingsInThingGroupInput{
+						ThingGroupName:	i.ThingGroupName,
+						MaxResults:	aws.Int32(250),
+					}
+
+					var things []string
+					for {
+						response, err := svc.ListThingsInThingGroup(ctx, &input)
+						if err != nil {
+							return nil, err
+						}
+
+						things = append(things, response.Things...)
+
+						if aws.ToString(response.NextToken) == "" {
+							break
+						}
+						input.NextToken = response.NextToken
+					}
+					return things, nil
+				}
+				extractResultValue, err := extractor()
+				if err != nil {
+					return nil, schema.NewDiagnostics().AddErrorColumnValueExtractor(task.Table, column, err)
+				} else {
+					return extractResultValue, nil
+				}
+			})).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ThingGroupArn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("version").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("Version")).Build(),
 	}
 }
 

@@ -11,25 +11,28 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| region | string | X | √ |  | 
-| last_observed_at | timestamp | X | √ |  | 
-| type | string | X | √ |  | 
-| first_observed_at | timestamp | X | √ |  | 
-| remediation | json | X | √ |  | 
-| status | string | X | √ |  | 
-| inspector_score_details | json | X | √ |  | 
-| updated_at | timestamp | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
+| aws_account_id | string | X | √ |  | 
+| inspector_score | float | X | √ |  | 
 | account_id | string | X | √ |  | 
+| finding_arn | string | X | √ |  | 
+| remediation | json | X | √ |  | 
+| resources | json | X | √ |  | 
+| type | string | X | √ |  | 
+| inspector_score_details | json | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
+| region | string | X | √ |  | 
 | arn | string | √ | √ |  | 
 | description | string | X | √ |  | 
-| inspector_score | float | X | √ |  | 
-| network_reachability_details | json | X | √ |  | 
-| title | string | X | √ |  | 
-| aws_account_id | string | X | √ |  | 
-| resources | json | X | √ |  | 
-| severity | string | X | √ |  | 
+| status | string | X | √ |  | 
 | fix_available | string | X | √ |  | 
+| network_reachability_details | json | X | √ |  | 
+| updated_at | timestamp | X | √ |  | 
+| first_observed_at | timestamp | X | √ |  | 
+| last_observed_at | timestamp | X | √ |  | 
+| severity | string | X | √ |  | 
+| exploit_available | string | X | √ |  | 
+| exploitability_details | json | X | √ |  | 
 | package_vulnerability_details | json | X | √ |  | 
+| title | string | X | √ |  | 
 
 

@@ -37,7 +37,7 @@ func (x *TableAwsRegionsGenerator) GetDataSource() *schema.DataSource {
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			c := client.(*aws_client.Client)
-			output, err := c.AwsServices().EC2.DescribeRegions(ctx, &ec2.DescribeRegionsInput{AllRegions: aws.Bool(true)})
+			output, err := c.AwsServices().Ec2.DescribeRegions(ctx, &ec2.DescribeRegionsInput{AllRegions: aws.Bool(true)})
 			if err != nil {
 				return schema.NewDiagnosticsErrorPullTable(task.Table, err)
 
@@ -94,8 +94,12 @@ func (x *TableAwsRegionsGenerator) GetColumns() []*schema.Column {
 			})).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("RegionName")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("endpoint").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("opt_in_status").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("endpoint").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Endpoint")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("opt_in_status").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("OptInStatus")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RegionName")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
 			Extractor(column_value_extractor.UUID()).Build(),
 	}

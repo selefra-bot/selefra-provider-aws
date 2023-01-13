@@ -75,27 +75,37 @@ func (x *TableAwsIamUsersGenerator) GetExpandClientTask() func(ctx context.Conte
 
 func (x *TableAwsIamUsersGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("path").ColumnType(schema.ColumnTypeString).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("create_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("user_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("password_last_used").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("permissions_boundary").ColumnType(schema.ColumnTypeJSON).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("id").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("UserId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Tags")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("create_date").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("CreateDate")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("path").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Path")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("user_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("UserId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Arn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("user_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("UserName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("password_last_used").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("PasswordLastUsed")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("permissions_boundary").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("PermissionsBoundary")).Build(),
 	}
 }
 
 func (x *TableAwsIamUsersGenerator) GetSubTables() []*schema.Table {
 	return []*schema.Table{
-		table_schema_generator.GenTableSchema(&TableAwsIamUserAccessKeysGenerator{}),
-		table_schema_generator.GenTableSchema(&TableAwsIamUserGroupsGenerator{}),
 		table_schema_generator.GenTableSchema(&TableAwsIamUserAttachedPoliciesGenerator{}),
 		table_schema_generator.GenTableSchema(&TableAwsIamUserPoliciesGenerator{}),
+		table_schema_generator.GenTableSchema(&TableAwsIamSshPublicKeysGenerator{}),
+		table_schema_generator.GenTableSchema(&TableAwsIamUserAccessKeysGenerator{}),
+		table_schema_generator.GenTableSchema(&TableAwsIamUserGroupsGenerator{}),
 	}
 }

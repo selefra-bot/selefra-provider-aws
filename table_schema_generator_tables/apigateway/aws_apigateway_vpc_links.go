@@ -2,7 +2,10 @@ package apigateway
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/apigateway"
 	"github.com/aws/aws-sdk-go-v2/service/apigateway/types"
 	"github.com/selefra/selefra-provider-aws/aws_client"
@@ -58,16 +61,22 @@ func (x *TableAwsApigatewayVpcLinksGenerator) GetExpandClientTask() func(ctx con
 
 func (x *TableAwsApigatewayVpcLinksGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Tags")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("status").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Description")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Id")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Name")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("target_arns").ColumnType(schema.ColumnTypeStringArray).
+			Extractor(column_value_extractor.StructSelector("TargetArns")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
 			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any,
 				task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
@@ -75,8 +84,13 @@ func (x *TableAwsApigatewayVpcLinksGenerator) GetColumns() []*schema.Column {
 				extractor := func() (any, error) {
 					cl := client.(*aws_client.Client)
 					link := result.(types.VpcLink)
-					arn := cl.RegionGlobalARN("apigateway", "/vpclinks", *link.Id)
-					return arn, nil
+					return arn.ARN{
+						Partition:	cl.Partition,
+						Service:	string("apigateway"),
+						Region:		cl.Region,
+						AccountID:	"",
+						Resource:	fmt.Sprintf("/vpclinks/%s", aws.ToString(link.Id)),
+					}.String(), nil
 				}
 				extractResultValue, err := extractor()
 				if err != nil {
@@ -85,9 +99,10 @@ func (x *TableAwsApigatewayVpcLinksGenerator) GetColumns() []*schema.Column {
 					return extractResultValue, nil
 				}
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("status_message").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("target_arns").ColumnType(schema.ColumnTypeStringArray).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("status").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Status")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("status_message").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("StatusMessage")).Build(),
 	}
 }
 

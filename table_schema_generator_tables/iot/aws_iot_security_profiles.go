@@ -40,7 +40,7 @@ func (x *TableAwsIotSecurityProfilesGenerator) GetDataSource() *schema.DataSourc
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			cl := client.(*aws_client.Client)
-			svc := cl.AwsServices().IOT
+			svc := cl.AwsServices().Iot
 			input := iot.ListSecurityProfilesInput{
 				MaxResults: aws.Int32(250),
 			}
@@ -81,6 +81,11 @@ func (x *TableAwsIotSecurityProfilesGenerator) GetExpandClientTask() func(ctx co
 
 func (x *TableAwsIotSecurityProfilesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
+		table_schema_generator.NewColumnBuilder().ColumnName("behaviors").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
+			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("targets").ColumnType(schema.ColumnTypeStringArray).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any,
 				task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
@@ -88,10 +93,10 @@ func (x *TableAwsIotSecurityProfilesGenerator) GetColumns() []*schema.Column {
 				extractor := func() (any, error) {
 					i := result.(*iot.DescribeSecurityProfileOutput)
 					cl := client.(*aws_client.Client)
-					svc := cl.AwsServices().IOT
+					svc := cl.AwsServices().Iot
 					input := iot.ListTargetsForSecurityProfileInput{
-						SecurityProfileName: i.SecurityProfileName,
-						MaxResults:          aws.Int32(250),
+						SecurityProfileName:	i.SecurityProfileName,
+						MaxResults:		aws.Int32(250),
 					}
 
 					var targets []string
@@ -119,25 +124,20 @@ func (x *TableAwsIotSecurityProfilesGenerator) GetColumns() []*schema.Column {
 					return extractResultValue, nil
 				}
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("last_modified_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("additional_metrics_to_retain").ColumnType(schema.ColumnTypeStringArray).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("security_profile_description").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("creation_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("security_profile_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("additional_metrics_to_retain_v2").ColumnType(schema.ColumnTypeJSON).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("SecurityProfileArn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("additional_metrics_to_retain_v2").ColumnType(schema.ColumnTypeJSON).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("alert_targets").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("behaviors").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("version").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("creation_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("last_modified_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("security_profile_description").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("version").ColumnType(schema.ColumnTypeInt).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("additional_metrics_to_retain").ColumnType(schema.ColumnTypeStringArray).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("security_profile_name").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).Build(),
 	}
 }
 

@@ -65,9 +65,12 @@ func (x *TableAwsXraySamplingRulesGenerator) GetColumns() []*schema.Column {
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("SamplingRule.RuleARN")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("created_at").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("modified_at").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("sampling_rule").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("created_at").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("CreatedAt")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("modified_at").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("ModifiedAt")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("sampling_rule").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("SamplingRule")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 	}

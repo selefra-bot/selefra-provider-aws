@@ -31,7 +31,6 @@ func (x *TableAwsRedshiftClusterParameterGroupsGenerator) GetOptions() *schema.T
 	return &schema.TableOptions{
 		PrimaryKeys: []string{
 			"cluster_arn",
-			"parameter_group_name",
 		},
 	}
 }
@@ -52,19 +51,22 @@ func (x *TableAwsRedshiftClusterParameterGroupsGenerator) GetExpandClientTask() 
 
 func (x *TableAwsRedshiftClusterParameterGroupsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("parameter_apply_status").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("cluster_arn").ColumnType(schema.ColumnTypeString).Description("`The Amazon Resource Name (ARN) for the resource.`").
+			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("parameter_group_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ParameterGroupName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("cluster_parameter_status_list").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ClusterParameterStatusList")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("parameter_apply_status").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ParameterApplyStatus")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("aws_redshift_clusters_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_redshift_clusters.selefra_id").
 			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("cluster_arn").ColumnType(schema.ColumnTypeString).Description("`The Amazon Resource Name (ARN) for the resource.`").
-			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("parameter_group_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("cluster_parameter_status_list").ColumnType(schema.ColumnTypeJSON).Build(),
 	}
 }
 

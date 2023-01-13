@@ -307,7 +307,7 @@ func resolveBucketVersioning(ctx context.Context, client any, resource *WrappedB
 }
 func resolveS3BucketsAttributes(ctx context.Context, client any, resource *WrappedBucket) error {
 	c := client.(*aws_client.Client)
-	mgr := c.AwsServices().S3Manager
+	mgr := c.AwsServices().S3manager
 
 	output, err := mgr.GetBucketRegion(ctx, *resource.Name)
 	if err != nil {

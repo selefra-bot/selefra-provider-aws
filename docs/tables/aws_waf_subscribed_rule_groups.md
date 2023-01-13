@@ -3,7 +3,7 @@
 ## Primary Keys 
 
 ```
-account_id, rule_group_id
+account_id
 ```
 
 
@@ -11,10 +11,10 @@ account_id, rule_group_id
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
-| account_id | string | X | √ | `The AWS Account ID of the resource.` | 
-| rule_group_id | string | X | √ | `A unique identifier for a RuleGroup.` | 
+| rule_group_id | string | X | √ |  | 
 | metric_name | string | X | √ |  | 
 | name | string | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
+| account_id | string | √ | √ | `The AWS Account ID of the resource.` | 
 
 

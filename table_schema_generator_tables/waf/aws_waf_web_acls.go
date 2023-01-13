@@ -101,10 +101,10 @@ func (x *TableAwsWafWebAclsGenerator) GetExpandClientTask() func(ctx context.Con
 
 func (x *TableAwsWafWebAclsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("logging_configuration").ColumnType(schema.ColumnTypeJSON).Description("`The LoggingConfiguration for the specified web ACL.`").Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("web_acl_id").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.StructSelector("WebACLId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("web_acl").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("WebACL")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("logging_configuration").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("LoggingConfiguration")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).

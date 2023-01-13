@@ -43,7 +43,7 @@ func (x *TableAwsEc2NetworkAclsGenerator) GetDataSource() *schema.DataSource {
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			var config ec2.DescribeNetworkAclsInput
 			c := client.(*aws_client.Client)
-			svc := c.AwsServices().EC2
+			svc := c.AwsServices().Ec2
 			for {
 				output, err := svc.DescribeNetworkAcls(ctx, &config)
 				if err != nil {
@@ -67,15 +67,18 @@ func (x *TableAwsEc2NetworkAclsGenerator) GetExpandClientTask() func(ctx context
 
 func (x *TableAwsEc2NetworkAclsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("is_default").ColumnType(schema.ColumnTypeBool).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("vpc_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Tags")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("associations").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Associations")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("entries").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Entries")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("vpc_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("VpcId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any,
 				task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
@@ -88,7 +91,7 @@ func (x *TableAwsEc2NetworkAclsGenerator) GetColumns() []*schema.Column {
 						Service:	"ec2",
 						Region:		cl.Region,
 						AccountID:	cl.AccountID,
-						Resource:	"network_acl/" + aws.ToString(item.NetworkAclId),
+						Resource:	"network-acl/" + aws.ToString(item.NetworkAclId),
 					}
 					return a.String(), nil
 				}
@@ -99,10 +102,14 @@ func (x *TableAwsEc2NetworkAclsGenerator) GetColumns() []*schema.Column {
 					return extractResultValue, nil
 				}
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("associations").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("entries").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("network_acl_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("owner_id").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("is_default").ColumnType(schema.ColumnTypeBool).
+			Extractor(column_value_extractor.StructSelector("IsDefault")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("network_acl_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("NetworkAclId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("owner_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("OwnerId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
+			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 	}
 }
 

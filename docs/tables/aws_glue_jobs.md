@@ -11,33 +11,33 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| tags | json | X | √ |  | 
-| description | string | X | √ |  | 
-| execution_property | json | X | √ |  | 
-| max_capacity | float | X | √ |  | 
-| name | string | X | √ |  | 
-| worker_type | string | X | √ |  | 
-| command | json | X | √ |  | 
-| default_arguments | json | X | √ |  | 
-| execution_class | string | X | √ |  | 
-| security_configuration | string | X | √ |  | 
-| account_id | string | X | √ |  | 
-| arn | string | √ | √ |  | 
-| role | string | X | √ |  | 
 | created_on | timestamp | X | √ |  | 
-| source_control_details | json | X | √ |  | 
-| region | string | X | √ |  | 
-| allocated_capacity | int | X | √ |  | 
-| last_modified_on | timestamp | X | √ |  | 
-| max_retries | int | X | √ |  | 
-| notification_property | json | X | √ |  | 
-| non_overridable_arguments | json | X | √ |  | 
-| timeout | int | X | √ |  | 
-| log_uri | string | X | √ |  | 
+| command | json | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
 | code_gen_configuration_nodes | json | X | √ |  | 
-| connections | json | X | √ |  | 
+| execution_class | string | X | √ |  | 
+| max_retries | big_int | X | √ |  | 
+| non_overridable_arguments | json | X | √ |  | 
+| security_configuration | string | X | √ |  | 
+| account_id | string | X | √ |  | 
+| tags | json | X | √ |  | 
+| description | string | X | √ |  | 
 | glue_version | string | X | √ |  | 
-| number_of_workers | int | X | √ |  | 
+| source_control_details | json | X | √ |  | 
+| connections | json | X | √ |  | 
+| max_capacity | float | X | √ |  | 
+| timeout | big_int | X | √ |  | 
+| region | string | X | √ |  | 
+| notification_property | json | X | √ |  | 
+| worker_type | string | X | √ |  | 
+| role | string | X | √ |  | 
+| allocated_capacity | big_int | X | √ |  | 
+| default_arguments | json | X | √ |  | 
+| execution_property | json | X | √ |  | 
+| log_uri | string | X | √ |  | 
+| number_of_workers | big_int | X | √ |  | 
+| arn | string | √ | √ |  | 
+| last_modified_on | timestamp | X | √ |  | 
+| name | string | X | √ |  | 
 
 

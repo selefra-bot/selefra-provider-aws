@@ -11,24 +11,25 @@ account_id, region, id
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
+| source_backup_region | string | X | √ |  | 
+| id | string | X | √ |  | 
+| directory_information | json | X | √ |  | 
+| failure_details | json | X | √ |  | 
+| volume | json | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
+| region | string | X | √ |  | 
+| creation_time | timestamp | X | √ |  | 
+| source_backup_id | string | X | √ |  | 
 | lifecycle | string | X | √ |  | 
 | type | string | X | √ |  | 
-| directory_information | json | X | √ |  | 
 | kms_key_id | string | X | √ |  | 
-| resource_arn | string | X | √ |  | 
-| tags | json | X | √ |  | 
-| source_backup_id | string | X | √ |  | 
-| region | string | X | √ |  | 
-| file_system | json | X | √ |  | 
-| failure_details | json | X | √ |  | 
 | owner_id | string | X | √ |  | 
-| source_backup_region | string | X | √ |  | 
-| volume | json | X | √ |  | 
-| creation_time | timestamp | X | √ |  | 
-| id | string | X | √ |  | 
-| progress_percent | int | X | √ |  | 
-| resource_type | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
+| resource_arn | string | X | √ |  | 
 | account_id | string | X | √ |  | 
+| tags | json | X | √ |  | 
+| backup_id | string | X | √ |  | 
+| file_system | json | X | √ |  | 
+| progress_percent | big_int | X | √ |  | 
+| resource_type | string | X | √ |  | 
 
 

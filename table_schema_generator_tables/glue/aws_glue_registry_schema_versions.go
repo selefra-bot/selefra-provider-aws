@@ -43,8 +43,8 @@ func (x *TableAwsGlueRegistrySchemaVersionsGenerator) GetDataSource() *schema.Da
 				SchemaArn: s.SchemaArn,
 			}
 			input := glue.ListSchemaVersionsInput{
-				SchemaId:   &schemaId,
-				MaxResults: aws.Int32(100),
+				SchemaId:	&schemaId,
+				MaxResults:	aws.Int32(100),
 			}
 			for {
 				result, err := svc.ListSchemaVersions(ctx, &input)
@@ -82,9 +82,22 @@ func (x *TableAwsGlueRegistrySchemaVersionsGenerator) GetExpandClientTask() func
 
 func (x *TableAwsGlueRegistrySchemaVersionsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("registry_schema_arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("created_time").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("created_time").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("CreatedTime")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("schema_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("SchemaArn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("version_number").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("VersionNumber")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("aws_glue_registry_schemas_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_glue_registry_schemas.selefra_id").
+			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("metadata").ColumnType(schema.ColumnTypeJSON).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any,
 				task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
@@ -124,21 +137,16 @@ func (x *TableAwsGlueRegistrySchemaVersionsGenerator) GetColumns() []*schema.Col
 					return extractResultValue, nil
 				}
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("status").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("aws_glue_registry_schemas_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_glue_registry_schemas.selefra_id").
-			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("schema_arn").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("schema_definition").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("data_format").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("schema_version_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("version_number").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
-			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("data_format").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DataFormat")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("schema_definition").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("SchemaDefinition")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("schema_version_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("SchemaVersionId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("status").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Status")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ResultMetadata")).Build(),
 	}
 }
 

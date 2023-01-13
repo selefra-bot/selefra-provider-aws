@@ -11,15 +11,16 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| time_commitment_in_seconds | int | X | √ |  | 
+| subscription_arn | string | X | √ |  | 
+| time_commitment_in_seconds | big_int | X | √ |  | 
 | account_id | string | X | √ |  | 
 | subscription_limits | json | X | √ |  | 
-| end_time | timestamp | X | √ |  | 
-| proactive_engagement_status | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
-| arn | string | √ | √ |  | 
 | auto_renew | string | X | √ |  | 
+| end_time | timestamp | X | √ |  | 
 | limits | json | X | √ |  | 
+| arn | string | √ | √ |  | 
+| proactive_engagement_status | string | X | √ |  | 
 | start_time | timestamp | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
 
 

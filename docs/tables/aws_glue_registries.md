@@ -11,15 +11,16 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
+| arn | string | √ | √ |  | 
+| registry_arn | string | X | √ |  | 
 | registry_name | string | X | √ |  | 
-| updated_time | string | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
 | region | string | X | √ |  | 
 | tags | json | X | √ |  | 
-| arn | string | √ | √ |  | 
 | created_time | string | X | √ |  | 
 | description | string | X | √ |  | 
-| account_id | string | X | √ |  | 
 | status | string | X | √ |  | 
+| updated_time | string | X | √ |  | 
+| account_id | string | X | √ |  | 
 
 

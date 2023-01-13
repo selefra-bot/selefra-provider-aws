@@ -30,18 +30,14 @@ func (x *TableAwsQldbLedgersGenerator) GetVersion() uint64 {
 }
 
 func (x *TableAwsQldbLedgersGenerator) GetOptions() *schema.TableOptions {
-	return &schema.TableOptions{
-		PrimaryKeys: []string{
-			"arn",
-		},
-	}
+	return &schema.TableOptions{}
 }
 
 func (x *TableAwsQldbLedgersGenerator) GetDataSource() *schema.DataSource {
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			c := client.(*aws_client.Client)
-			svc := c.AwsServices().QLDB
+			svc := c.AwsServices().Qldb
 			config := qldb.ListLedgersInput{}
 			for {
 				response, err := svc.ListLedgers(ctx, &config)
@@ -51,7 +47,7 @@ func (x *TableAwsQldbLedgersGenerator) GetDataSource() *schema.DataSource {
 				}
 				aws_client.SendResults(resultChannel, response.Ledgers, func(result any) (any, error) {
 					c := client.(*aws_client.Client)
-					svc := c.AwsServices().QLDB
+					svc := c.AwsServices().Qldb
 					l := result.(types.LedgerSummary)
 
 					response, err := svc.DescribeLedger(ctx, &qldb.DescribeLedgerInput{Name: l.Name})
@@ -77,27 +73,35 @@ func (x *TableAwsQldbLedgersGenerator) GetExpandClientTask() func(ctx context.Co
 
 func (x *TableAwsQldbLedgersGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Description("`The tags associated with the pipeline.`").Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("encryption_description").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("state").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Name")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("state").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("State")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("creation_date_time").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("deletion_protection").ColumnType(schema.ColumnTypeBool).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("permissions_mode").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Description("`The tags associated with the pipeline.`").Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Arn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("creation_date_time").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("CreationDateTime")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("deletion_protection").ColumnType(schema.ColumnTypeBool).
+			Extractor(column_value_extractor.StructSelector("DeletionProtection")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("encryption_description").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("EncryptionDescription")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("permissions_mode").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("PermissionsMode")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ResultMetadata")).Build(),
 	}
 }
 
 func (x *TableAwsQldbLedgersGenerator) GetSubTables() []*schema.Table {
 	return []*schema.Table{
-		table_schema_generator.GenTableSchema(&TableAwsQldbLedgerJournalKinesisStreamsGenerator{}),
 		table_schema_generator.GenTableSchema(&TableAwsQldbLedgerJournalS3ExportsGenerator{}),
+		table_schema_generator.GenTableSchema(&TableAwsQldbLedgerJournalKinesisStreamsGenerator{}),
 	}
 }

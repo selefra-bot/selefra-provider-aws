@@ -30,11 +30,7 @@ func (x *TableAwsLightsailInstancesGenerator) GetVersion() uint64 {
 }
 
 func (x *TableAwsLightsailInstancesGenerator) GetOptions() *schema.TableOptions {
-	return &schema.TableOptions{
-		PrimaryKeys: []string{
-			"arn",
-		},
-	}
+	return &schema.TableOptions{}
 }
 
 func (x *TableAwsLightsailInstancesGenerator) GetDataSource() *schema.DataSource {
@@ -67,10 +63,34 @@ func (x *TableAwsLightsailInstancesGenerator) GetExpandClientTask() func(ctx con
 
 func (x *TableAwsLightsailInstancesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("public_ip_address").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("state").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("blueprint_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("BlueprintName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("created_at").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("CreatedAt")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("ip_address_type").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("IpAddressType")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("is_static_ip").ColumnType(schema.ColumnTypeBool).
+			Extractor(column_value_extractor.StructSelector("IsStaticIp")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("location").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Location")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("resource_type").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ResourceType")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("state").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("State")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("support_code").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("SupportCode")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("blueprint_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("BlueprintId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("bundle_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("BundleId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("ipv6_addresses").ColumnType(schema.ColumnTypeStringArray).
+			Extractor(column_value_extractor.StructSelector("Ipv6Addresses")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Name")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("username").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Username")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("access_details").ColumnType(schema.ColumnTypeJSON).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any,
 				task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
@@ -93,30 +113,28 @@ func (x *TableAwsLightsailInstancesGenerator) GetColumns() []*schema.Column {
 					return extractResultValue, nil
 				}
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("hardware").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("is_static_ip").ColumnType(schema.ColumnTypeBool).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("metadata_options").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("username").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("created_at").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("ip_address_type").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("ipv6_addresses").ColumnType(schema.ColumnTypeStringArray).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("location").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("networking").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("resource_type").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Arn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Tags")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("networking").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Networking")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("private_ip_address").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("PrivateIpAddress")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("ssh_key_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("SshKeyName")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("blueprint_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("blueprint_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("ssh_key_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("support_code").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("add_ons").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("bundle_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("private_ip_address").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("add_ons").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("AddOns")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("hardware").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Hardware")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("metadata_options").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("MetadataOptions")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("public_ip_address").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("PublicIpAddress")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
 	}
 }
 

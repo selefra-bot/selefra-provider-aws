@@ -3,7 +3,7 @@
 ## Primary Keys 
 
 ```
-account_id, region, name
+account_id, region
 ```
 
 
@@ -12,18 +12,18 @@ account_id, region, name
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
 | policies | json | X | √ |  | 
-| version | int | X | √ |  | 
-| last_modified_user | string | X | √ |  | 
-| last_modified_date | timestamp | X | √ |  | 
 | type | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
-| description | string | X | √ |  | 
-| name | string | X | √ | `The parameter name` | 
-| account_id | string | X | √ | `The AWS Account ID of the resource` | 
+| name | string | X | √ |  | 
 | allowed_pattern | string | X | √ |  | 
-| data_type | string | X | √ |  | 
 | key_id | string | X | √ |  | 
+| last_modified_date | timestamp | X | √ |  | 
+| region | string | X | √ |  | 
+| description | string | X | √ |  | 
+| last_modified_user | string | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
+| account_id | string | X | √ |  | 
+| data_type | string | X | √ |  | 
 | tier | string | X | √ |  | 
-| region | string | X | √ | `The AWS Region of the resource` | 
+| version | big_int | X | √ |  | 
 
 

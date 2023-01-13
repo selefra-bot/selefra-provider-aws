@@ -40,7 +40,7 @@ func (x *TableAwsRdsClusterParameterGroupsGenerator) GetDataSource() *schema.Dat
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			cl := client.(*aws_client.Client)
-			svc := cl.AwsServices().RDS
+			svc := cl.AwsServices().Rds
 			var input rds.DescribeDBClusterParameterGroupsInput
 			for {
 				output, err := svc.DescribeDBClusterParameterGroups(ctx, &input)
@@ -65,20 +65,23 @@ func (x *TableAwsRdsClusterParameterGroupsGenerator) GetExpandClientTask() func(
 
 func (x *TableAwsRdsClusterParameterGroupsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.StructSelector("DBClusterParameterGroupArn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("db_cluster_parameter_group_name").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.StructSelector("DBClusterParameterGroupName")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("db_parameter_group_family").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("DBParameterGroupFamily")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DBClusterParameterGroupArn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("db_cluster_parameter_group_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DBClusterParameterGroupArn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("db_cluster_parameter_group_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DBClusterParameterGroupName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Description")).Build(),
 	}
 }
 

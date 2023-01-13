@@ -13,12 +13,12 @@ account_id, region, scope
 |  ----  | ----  | ----  | ----  | ---- | 
 | account_id | string | X | √ |  | 
 | scope | string | X | √ |  | 
-| name | string | X | √ |  | 
+| properties | json | X | √ |  | 
 | versioning_supported | bool | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
 | region | string | X | √ |  | 
-| properties | json | X | √ |  | 
 | description | string | X | √ |  | 
+| name | string | X | √ |  | 
 | vendor_name | string | X | √ |  | 
 
 

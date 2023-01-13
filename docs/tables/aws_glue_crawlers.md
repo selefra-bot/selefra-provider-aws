@@ -11,30 +11,30 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| creation_time | timestamp | X | √ |  | 
+| crawler_security_configuration | string | X | √ |  | 
+| last_crawl | json | X | √ |  | 
+| name | string | X | √ |  | 
+| state | string | X | √ |  | 
+| targets | json | X | √ |  | 
+| crawl_elapsed_time | big_int | X | √ |  | 
 | last_updated | timestamp | X | √ |  | 
 | lineage_configuration | json | X | √ |  | 
 | role | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
-| region | string | X | √ |  | 
-| crawl_elapsed_time | int | X | √ |  | 
+| schedule | json | X | √ |  | 
+| version | big_int | X | √ |  | 
+| account_id | string | X | √ |  | 
+| configuration | string | X | √ |  | 
+| creation_time | timestamp | X | √ |  | 
 | lake_formation_configuration | json | X | √ |  | 
 | recrawl_policy | json | X | √ |  | 
-| version | int | X | √ |  | 
 | classifiers | string_array | X | √ |  | 
-| crawler_security_configuration | string | X | √ |  | 
-| configuration | string | X | √ |  | 
-| description | string | X | √ |  | 
-| state | string | X | √ |  | 
-| table_prefix | string | X | √ |  | 
-| account_id | string | X | √ |  | 
 | arn | string | √ | √ |  | 
-| last_crawl | json | X | √ |  | 
-| name | string | X | √ |  | 
-| schedule | json | X | √ |  | 
-| schema_change_policy | json | X | √ |  | 
-| targets | json | X | √ |  | 
 | tags | json | X | √ |  | 
 | database_name | string | X | √ |  | 
+| description | string | X | √ |  | 
+| schema_change_policy | json | X | √ |  | 
+| table_prefix | string | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
+| region | string | X | √ |  | 
 
 

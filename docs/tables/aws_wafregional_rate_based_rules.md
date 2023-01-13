@@ -11,16 +11,16 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| account_id | string | X | √ |  | 
-| tags | json | X | √ |  | 
-| match_predicates | json | X | √ |  | 
+| rate_limit | big_int | X | √ |  | 
 | rule_id | string | X | √ |  | 
 | metric_name | string | X | √ |  | 
 | name | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
+| account_id | string | X | √ |  | 
 | region | string | X | √ |  | 
-| arn | string | √ | √ |  | 
 | rate_key | string | X | √ |  | 
-| rate_limit | int | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
+| arn | string | √ | √ |  | 
+| tags | json | X | √ |  | 
+| match_predicates | json | X | √ |  | 
 
 

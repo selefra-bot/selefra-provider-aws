@@ -66,13 +66,10 @@ func (x *TableAwsGlacierVaultsGenerator) GetExpandClientTask() func(ctx context.
 
 func (x *TableAwsGlacierVaultsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("last_inventory_date").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("number_of_archives").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("creation_date").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("size_in_bytes").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("vault_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("vault_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("VaultARN")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("vault_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("VaultName")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
@@ -80,6 +77,16 @@ func (x *TableAwsGlacierVaultsGenerator) GetColumns() []*schema.Column {
 		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("VaultARN")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("last_inventory_date").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("LastInventoryDate")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("creation_date").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("CreationDate")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("number_of_archives").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("NumberOfArchives")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("size_in_bytes").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("SizeInBytes")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
+			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 	}
 }
 

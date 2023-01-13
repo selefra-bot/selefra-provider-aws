@@ -29,11 +29,7 @@ func (x *TableAwsIamSamlIdentityProvidersGenerator) GetVersion() uint64 {
 }
 
 func (x *TableAwsIamSamlIdentityProvidersGenerator) GetOptions() *schema.TableOptions {
-	return &schema.TableOptions{
-		PrimaryKeys: []string{
-			"arn",
-		},
-	}
+	return &schema.TableOptions{}
 }
 
 func (x *TableAwsIamSamlIdentityProvidersGenerator) GetDataSource() *schema.DataSource {
@@ -53,7 +49,11 @@ func (x *TableAwsIamSamlIdentityProvidersGenerator) GetDataSource() *schema.Data
 				if err != nil {
 					return nil, err
 				}
-				return IAMSAMLIdentityProviderWrapper{GetSAMLProviderOutput: providerResponse, Arn: *p.Arn}, nil
+				return IAMSAMLIdentityProviderWrapper{
+					GetSAMLProviderOutput:	providerResponse,
+					Arn:			*p.Arn,
+					Tags:			aws_client.TagsToMap(providerResponse.Tags),
+				}, nil
 
 			})
 			return nil
@@ -64,6 +64,7 @@ func (x *TableAwsIamSamlIdentityProvidersGenerator) GetDataSource() *schema.Data
 type IAMSAMLIdentityProviderWrapper struct {
 	*iam.GetSAMLProviderOutput
 	Arn	string
+	Tags	map[string]string
 }
 
 func (x *TableAwsIamSamlIdentityProvidersGenerator) GetExpandClientTask() func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask) []*schema.ClientTaskContext {
@@ -72,14 +73,16 @@ func (x *TableAwsIamSamlIdentityProvidersGenerator) GetExpandClientTask() func(c
 
 func (x *TableAwsIamSamlIdentityProvidersGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Tags")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("create_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("valid_until").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Arn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("get_saml_provider_output").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("GetSAMLProviderOutput")).Build(),
 	}
 }
 

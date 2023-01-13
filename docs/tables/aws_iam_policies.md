@@ -11,20 +11,21 @@ account_id, id
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| arn | string | X | √ |  | 
-| attachment_count | int | X | √ |  | 
-| create_date | timestamp | X | √ |  | 
-| default_version_id | string | X | √ |  | 
-| policy_name | string | X | √ |  | 
 | account_id | string | X | √ |  | 
 | id | string | X | √ |  | 
-| policy_version_list | json | X | √ |  | 
-| is_attachable | bool | X | √ |  | 
-| update_date | timestamp | X | √ |  | 
 | tags | json | X | √ |  | 
-| permissions_boundary_usage_count | int | X | √ |  | 
+| update_date | timestamp | X | √ |  | 
+| arn | string | X | √ |  | 
 | description | string | X | √ |  | 
+| is_attachable | bool | X | √ |  | 
+| policy_id | string | X | √ |  | 
+| create_date | timestamp | X | √ |  | 
+| default_version_id | string | X | √ |  | 
 | path | string | X | √ |  | 
+| permissions_boundary_usage_count | big_int | X | √ |  | 
+| policy_name | string | X | √ |  | 
+| policy_version_list | json | X | √ |  | 
+| attachment_count | big_int | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
 
 

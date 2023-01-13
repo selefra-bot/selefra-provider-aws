@@ -11,34 +11,34 @@ account_id
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| groups_per_user_quota | int | X | √ |  | 
-| mfa_devices | int | X | √ |  | 
-| group_policy_size_quota | int | X | √ |  | 
-| users | int | X | √ |  | 
-| server_certificates | int | X | √ |  | 
-| account_id | string | √ | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
-| account_signing_certificates_present | bool | X | √ |  | 
-| versions_per_policy_quota | int | X | √ |  | 
-| global_endpoint_token_version | int | X | √ |  | 
-| user_policy_size_quota | int | X | √ |  | 
-| mfa_devices_in_use | int | X | √ |  | 
-| attached_policies_per_group_quota | int | X | √ |  | 
-| policy_size_quota | int | X | √ |  | 
-| policy_versions_in_use | int | X | √ |  | 
+| groups_quota | big_int | X | √ |  | 
+| server_certificates_quota | big_int | X | √ |  | 
+| group_policy_size_quota | big_int | X | √ |  | 
 | aliases | string_array | X | √ |  | 
-| access_keys_per_user_quota | int | X | √ |  | 
-| groups_quota | int | X | √ |  | 
-| server_certificates_quota | int | X | √ |  | 
+| groups | big_int | X | √ |  | 
+| user_policy_size_quota | big_int | X | √ |  | 
+| attached_policies_per_group_quota | big_int | X | √ |  | 
+| versions_per_policy_quota | big_int | X | √ |  | 
+| access_keys_per_user_quota | big_int | X | √ |  | 
+| mfa_devices | big_int | X | √ |  | 
+| users | big_int | X | √ |  | 
+| server_certificates | big_int | X | √ |  | 
+| account_signing_certificates_present | bool | X | √ |  | 
+| policy_versions_in_use_quota | big_int | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
+| groups_per_user_quota | big_int | X | √ |  | 
 | account_access_keys_present | bool | X | √ |  | 
-| attached_policies_per_user_quota | int | X | √ |  | 
-| policies_quota | int | X | √ |  | 
-| users_quota | int | X | √ |  | 
+| policy_size_quota | big_int | X | √ |  | 
+| policy_versions_in_use | big_int | X | √ |  | 
+| account_id | string | √ | √ |  | 
+| users_quota | big_int | X | √ |  | 
+| signing_certificates_per_user_quota | big_int | X | √ |  | 
+| attached_policies_per_role_quota | big_int | X | √ |  | 
+| global_endpoint_token_version | big_int | X | √ |  | 
+| mfa_devices_in_use | big_int | X | √ |  | 
 | account_mfa_enabled | bool | X | √ |  | 
-| attached_policies_per_role_quota | int | X | √ |  | 
-| policies | int | X | √ |  | 
-| policy_versions_in_use_quota | int | X | √ |  | 
-| signing_certificates_per_user_quota | int | X | √ |  | 
-| groups | int | X | √ |  | 
+| attached_policies_per_user_quota | big_int | X | √ |  | 
+| policies | big_int | X | √ |  | 
+| policies_quota | big_int | X | √ |  | 
 
 

@@ -11,19 +11,19 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| account_id | string | X | √ |  | 
-| created_date | timestamp | X | √ |  | 
-| customer_id | string | X | √ |  | 
-| name | string | X | √ |  | 
-| stage_keys | string_array | X | √ |  | 
-| description | string | X | √ |  | 
-| last_updated_date | timestamp | X | √ |  | 
-| tags | json | X | √ |  | 
-| value | string | X | √ |  | 
 | region | string | X | √ |  | 
-| arn | string | √ | √ |  | 
+| customer_id | string | X | √ |  | 
 | enabled | bool | X | √ |  | 
-| id | string | X | √ |  | 
+| stage_keys | string_array | X | √ |  | 
+| tags | json | X | √ |  | 
+| created_date | timestamp | X | √ |  | 
+| last_updated_date | timestamp | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
+| account_id | string | X | √ |  | 
+| id | string | X | √ |  | 
+| value | string | X | √ |  | 
+| arn | string | √ | √ |  | 
+| description | string | X | √ |  | 
+| name | string | X | √ |  | 
 
 

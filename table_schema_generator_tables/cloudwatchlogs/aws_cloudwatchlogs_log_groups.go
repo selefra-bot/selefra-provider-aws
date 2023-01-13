@@ -29,11 +29,7 @@ func (x *TableAwsCloudwatchlogsLogGroupsGenerator) GetVersion() uint64 {
 }
 
 func (x *TableAwsCloudwatchlogsLogGroupsGenerator) GetOptions() *schema.TableOptions {
-	return &schema.TableOptions{
-		PrimaryKeys: []string{
-			"arn",
-		},
-	}
+	return &schema.TableOptions{}
 }
 
 func (x *TableAwsCloudwatchlogsLogGroupsGenerator) GetDataSource() *schema.DataSource {
@@ -41,7 +37,7 @@ func (x *TableAwsCloudwatchlogsLogGroupsGenerator) GetDataSource() *schema.DataS
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			var config cloudwatchlogs.DescribeLogGroupsInput
 			c := client.(*aws_client.Client)
-			svc := c.AwsServices().CloudwatchLogs
+			svc := c.AwsServices().Cloudwatchlogs
 			for {
 				response, err := svc.DescribeLogGroups(ctx, &config)
 				if err != nil {
@@ -65,20 +61,29 @@ func (x *TableAwsCloudwatchlogsLogGroupsGenerator) GetExpandClientTask() func(ct
 
 func (x *TableAwsCloudwatchlogsLogGroupsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("kms_key_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("KmsKeyId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("log_group_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("LogGroupName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("retention_in_days").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("RetentionInDays")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("creation_time").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("CreationTime")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("data_protection_status").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DataProtectionStatus")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("metric_filter_count").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("MetricFilterCount")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("stored_bytes").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("StoredBytes")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("kms_key_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("metric_filter_count").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("retention_in_days").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("stored_bytes").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("creation_time").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("log_group_name").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Arn")).Build(),
 	}
 }
 

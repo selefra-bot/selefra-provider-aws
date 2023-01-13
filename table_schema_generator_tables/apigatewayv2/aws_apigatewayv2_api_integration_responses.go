@@ -70,21 +70,20 @@ func (x *TableAwsApigatewayv2ApiIntegrationResponsesGenerator) GetExpandClientTa
 
 func (x *TableAwsApigatewayv2ApiIntegrationResponsesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("integration_response_key").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("integration_response_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("response_parameters").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("integration_response_key").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("IntegrationResponseKey")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("content_handling_strategy").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ContentHandlingStrategy")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("integration_response_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("IntegrationResponseId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("response_templates").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ResponseTemplates")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("aws_apigatewayv2_api_integrations_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_apigatewayv2_api_integrations.selefra_id").
 			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
-			Extractor(column_value_extractor.UUID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("api_integration_arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("integration_id").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.ParentColumnValue("integration_id")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
 
@@ -115,9 +114,16 @@ func (x *TableAwsApigatewayv2ApiIntegrationResponsesGenerator) GetColumns() []*s
 					Resource:	strings.Join(ids, "/"),
 				}.String(), nil
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("content_handling_strategy").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("response_templates").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("template_selection_expression").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("template_selection_expression").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("TemplateSelectionExpression")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("integration_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.ParentColumnValue("integration_id")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("response_parameters").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ResponseParameters")).Build(),
 	}
 }
 

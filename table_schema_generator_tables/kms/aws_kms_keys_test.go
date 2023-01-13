@@ -1,58 +1,176 @@
+
+
+
+
 package kms
+
+
 
 import (
 	"testing"
 
+
+
+
+
+
+
 	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/aws/aws-sdk-go-v2/service/kms/types"
+
+
 	"github.com/golang/mock/gomock"
+
+
+
+
 	"github.com/selefra/selefra-provider-aws/aws_client"
+
+
+
+
 	"github.com/selefra/selefra-provider-aws/aws_client/mocks"
 	"github.com/selefra/selefra-provider-aws/faker"
 	"github.com/selefra/selefra-provider-aws/table_schema_generator"
+
+
+
+
 )
 
+
+
 func buildKmsKeys(t *testing.T, ctrl *gomock.Controller) aws_client.AwsServices {
+
+
+
+
 	m := mocks.NewMockKmsClient(ctrl)
 
-	keys := kms.ListKeysOutput{}
-	err := faker.FakeObject(&keys)
-	if err != nil {
+
+
+	keyListEntry := types.KeyListEntry{}
+
+
+	if err := faker.FakeObject(&keyListEntry); err != nil {
+
+
 		t.Fatal(err)
+
+
+
+
 	}
-	keys.NextMarker = nil
-	m.EXPECT().ListKeys(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes().Return(
-		&keys, nil)
+
+
+
+
+
+	m.EXPECT().ListKeys(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes().Return(&kms.ListKeysOutput{Keys: []types.KeyListEntry{keyListEntry}}, nil)
+
+
+
+
 
 	tags := kms.ListResourceTagsOutput{}
-	err = faker.FakeObject(&tags)
-	if err != nil {
+
+
+	if err := faker.FakeObject(&tags); err != nil {
+
+
 		t.Fatal(err)
+
+
+
+
 	}
 	tags.NextMarker = nil
-	m.EXPECT().ListResourceTags(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes().Return(
-		&tags, nil)
+
+
+	m.EXPECT().ListResourceTags(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes().Return(&tags, nil)
+
+
 
 	key := kms.DescribeKeyOutput{}
-	err = faker.FakeObject(&key)
-	if err != nil {
+
+
+
+
+	if err := faker.FakeObject(&key); err != nil {
+
+
 		t.Fatal(err)
+
+
+
+
 	}
-	m.EXPECT().DescribeKey(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes().Return(
-		&key, nil)
+	m.EXPECT().DescribeKey(gomock.Any(), &kms.DescribeKeyInput{KeyId: keyListEntry.KeyId}, gomock.Any()).AnyTimes().Return(&key, nil)
+
+
+
+
 
 	rotation := kms.GetKeyRotationStatusOutput{}
-	err = faker.FakeObject(&rotation)
-	if err != nil {
+
+
+	if err := faker.FakeObject(&rotation); err != nil {
 		t.Fatal(err)
+
+
 	}
-	m.EXPECT().GetKeyRotationStatus(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes().Return(
-		&rotation, nil)
+
+
+	m.EXPECT().GetKeyRotationStatus(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes().Return(&rotation, nil)
+
+
+
+
+
+
+
+	g := kms.ListGrantsOutput{}
+	if err := faker.FakeObject(&g); err != nil {
+
+
+		t.Fatal(err)
+
+
+
+
+	}
+
+
+	g.NextMarker = nil
+	m.EXPECT().ListGrants(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes().Return(&g, nil)
+
+
+
+
+
+
 
 	return aws_client.AwsServices{
-		KMS: m,
+
+
+
+
+		Kms: m,
 	}
+
+
 }
 
+
+
 func TestKmsKeys(t *testing.T) {
+
+
+
+
 	aws_client.MockTestHelper(t, table_schema_generator.GenTableSchema(&TableAwsKmsKeysGenerator{}), buildKmsKeys, aws_client.TestOptions{})
+
+
 }
+
+

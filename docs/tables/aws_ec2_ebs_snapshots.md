@@ -11,27 +11,27 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
-| region | string | X | √ |  | 
-| outpost_arn | string | X | √ |  | 
 | owner_id | string | X | √ |  | 
-| kms_key_id | string | X | √ |  | 
-| progress | string | X | √ |  | 
-| snapshot_id | string | X | √ |  | 
-| start_time | timestamp | X | √ |  | 
-| state_message | string | X | √ |  | 
-| storage_tier | string | X | √ |  | 
-| volume_size | int | X | √ |  | 
-| arn | string | √ | √ |  | 
-| attribute | json | X | √ |  | 
 | restore_expiry_time | timestamp | X | √ |  | 
-| encrypted | bool | X | √ |  | 
-| owner_alias | string | X | √ |  | 
-| state | string | X | √ |  | 
-| tags | json | X | √ |  | 
-| volume_id | string | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
 | account_id | string | X | √ |  | 
+| region | string | X | √ |  | 
+| attribute | json | X | √ |  | 
+| tags | json | X | √ |  | 
 | data_encryption_key_id | string | X | √ |  | 
 | description | string | X | √ |  | 
+| progress | string | X | √ |  | 
+| start_time | timestamp | X | √ |  | 
+| volume_id | string | X | √ |  | 
+| volume_size | big_int | X | √ |  | 
+| arn | string | √ | √ |  | 
+| encrypted | bool | X | √ |  | 
+| outpost_arn | string | X | √ |  | 
+| state | string | X | √ |  | 
+| storage_tier | string | X | √ |  | 
+| kms_key_id | string | X | √ |  | 
+| owner_alias | string | X | √ |  | 
+| snapshot_id | string | X | √ |  | 
+| state_message | string | X | √ |  | 
 
 

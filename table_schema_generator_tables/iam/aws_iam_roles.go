@@ -2,8 +2,6 @@ package iam
 
 import (
 	"context"
-	"encoding/json"
-	"net/url"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
@@ -79,11 +77,10 @@ func (x *TableAwsIamRolesGenerator) GetExpandClientTask() func(ctx context.Conte
 
 func (x *TableAwsIamRolesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("role_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("max_session_duration").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("permissions_boundary").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("create_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("role_last_used").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Tags")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("role_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RoleId")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
@@ -125,39 +122,26 @@ func (x *TableAwsIamRolesGenerator) GetColumns() []*schema.Column {
 					return extractResultValue, nil
 				}
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("permissions_boundary").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("PermissionsBoundary")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("role_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RoleName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("max_session_duration").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("MaxSessionDuration")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("role_last_used").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("RoleLastUsed")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("id").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("RoleId")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("assume_role_policy_document").ColumnType(schema.ColumnTypeJSON).
-			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any,
-				task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
-
-				extractor := func() (any, error) {
-					r := result.(*types.Role)
-					if r.AssumeRolePolicyDocument == nil {
-						return nil, nil
-					}
-					decodedDocument, err := url.QueryUnescape(*r.AssumeRolePolicyDocument)
-					if err != nil {
-						return nil, err
-					}
-					var d map[string]interface{}
-					err = json.Unmarshal([]byte(decodedDocument), &d)
-					if err != nil {
-						return nil, err
-					}
-					return d, nil
-				}
-				extractResultValue, err := extractor()
-				if err != nil {
-					return nil, schema.NewDiagnostics().AddErrorColumnValueExtractor(task.Table, column, err)
-				} else {
-					return extractResultValue, nil
-				}
-			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("path").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("assume_role_policy_document").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("AssumeRolePolicyDocument")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Arn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("create_date").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("CreateDate")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("path").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Path")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Description")).Build(),
 	}
 }
 

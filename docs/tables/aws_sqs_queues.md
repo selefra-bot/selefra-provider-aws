@@ -1,42 +1,35 @@
 # Table: aws_sqs_queues
 
-## Primary Keys 
-
-```
-arn
-```
-
-
 ## Columns 
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| url | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
-| content_based_deduplication | bool | X | √ |  | 
-| approximate_number_of_messages_delayed | int | X | √ |  | 
-| approximate_number_of_messages_not_visible | int | X | √ |  | 
-| sqs_managed_sse_enabled | bool | X | √ |  | 
-| redrive_policy | json | X | √ |  | 
-| visibility_timeout | int | X | √ |  | 
-| fifo_queue | bool | X | √ |  | 
-| delay_seconds | int | X | √ |  | 
-| last_modified_timestamp | int | X | √ |  | 
-| message_retention_period | int | X | √ |  | 
-| fifo_throughput_limit | string | X | √ |  | 
 | region | string | X | √ |  | 
-| arn | string | √ | √ |  | 
-| approximate_number_of_messages | int | X | √ |  | 
-| kms_data_key_reuse_period_seconds | int | X | √ |  | 
-| deduplication_scope | string | X | √ |  | 
-| tags | json | X | √ |  | 
-| maximum_message_size | int | X | √ |  | 
-| redrive_allow_policy | json | X | √ |  | 
-| kms_master_key_id | string | X | √ |  | 
+| url | string | X | √ |  | 
+| policy | string | X | √ |  | 
+| approximate_number_of_messages | big_int | X | √ |  | 
+| sqs_managed_sse_enabled | bool | X | √ |  | 
 | unknown_fields | json | X | √ |  | 
+| created_timestamp | big_int | X | √ |  | 
+| last_modified_timestamp | big_int | X | √ |  | 
+| kms_data_key_reuse_period_seconds | big_int | X | √ |  | 
+| approximate_number_of_messages_delayed | big_int | X | √ |  | 
+| maximum_message_size | big_int | X | √ |  | 
+| kms_master_key_id | string | X | √ |  | 
+| content_based_deduplication | bool | X | √ |  | 
+| deduplication_scope | string | X | √ |  | 
+| selefra_id | string | √ | √ | random id | 
 | account_id | string | X | √ |  | 
-| policy | json | X | √ |  | 
-| created_timestamp | int | X | √ |  | 
-| receive_message_wait_time_seconds | int | X | √ |  | 
+| redrive_allow_policy | string | X | √ |  | 
+| tags | json | X | √ |  | 
+| visibility_timeout | big_int | X | √ |  | 
+| fifo_queue | bool | X | √ |  | 
+| arn | string | X | √ |  | 
+| redrive_policy | string | X | √ |  | 
+| approximate_number_of_messages_not_visible | big_int | X | √ |  | 
+| delay_seconds | big_int | X | √ |  | 
+| fifo_throughput_limit | string | X | √ |  | 
+| message_retention_period | big_int | X | √ |  | 
+| receive_message_wait_time_seconds | big_int | X | √ |  | 
 
 

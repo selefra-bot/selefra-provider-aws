@@ -11,13 +11,13 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| traffic_policy_count | int | X | √ |  | 
+| arn | string | √ | √ |  | 
+| id | string | X | √ |  | 
+| latest_version | big_int | X | √ |  | 
+| name | string | X | √ |  | 
+| traffic_policy_count | big_int | X | √ |  | 
 | type | string | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
 | account_id | string | X | √ |  | 
-| arn | string | √ | √ |  | 
-| id | string | X | √ |  | 
-| latest_version | int | X | √ |  | 
-| name | string | X | √ |  | 
 
 

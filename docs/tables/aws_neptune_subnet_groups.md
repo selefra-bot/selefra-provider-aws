@@ -11,14 +11,15 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
+| subnet_group_status | string | X | √ |  | 
+| vpc_id | string | X | √ |  | 
+| db_subnet_group_arn | string | X | √ |  | 
 | account_id | string | X | √ |  | 
 | arn | string | √ | √ |  | 
-| db_subnet_group_description | string | X | √ |  | 
-| db_subnet_group_name | string | X | √ |  | 
-| vpc_id | string | X | √ |  | 
-| region | string | X | √ |  | 
 | tags | json | X | √ |  | 
-| subnet_group_status | string | X | √ |  | 
+| db_subnet_group_description | string | X | √ |  | 
+| region | string | X | √ |  | 
+| db_subnet_group_name | string | X | √ |  | 
 | subnets | json | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
 

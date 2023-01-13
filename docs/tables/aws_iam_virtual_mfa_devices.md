@@ -1,24 +1,16 @@
 # Table: aws_iam_virtual_mfa_devices
 
-## Primary Keys 
-
-```
-serial_number
-```
-
-
 ## Columns 
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| base32_string_seed | int_array | X | √ |  | 
-| qr_code_png | int_array | X | √ |  | 
-| serial_number | string | √ | √ |  | 
+| serial_number | string | X | √ |  | 
 | tags | json | X | √ |  | 
+| base32_string_seed | int_array | X | √ |  | 
 | enable_date | timestamp | X | √ |  | 
+| qr_code_png | int_array | X | √ |  | 
 | user | json | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
+| selefra_id | string | √ | √ | random id | 
 | account_id | string | X | √ |  | 
-| user_tags | json | X | √ |  | 
 
 

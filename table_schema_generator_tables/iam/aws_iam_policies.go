@@ -2,7 +2,6 @@ package iam
 
 import (
 	"context"
-	"net/url"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
@@ -71,45 +70,37 @@ func (x *TableAwsIamPoliciesGenerator) GetExpandClientTask() func(ctx context.Co
 
 func (x *TableAwsIamPoliciesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("policy_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("id").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("PolicyId")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("create_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("permissions_boundary_usage_count").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("is_attachable").ColumnType(schema.ColumnTypeBool).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("update_date").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("UpdateDate")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Arn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Description")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("is_attachable").ColumnType(schema.ColumnTypeBool).
+			Extractor(column_value_extractor.StructSelector("IsAttachable")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("policy_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("PolicyId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("create_date").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("CreateDate")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("default_version_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DefaultVersionId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("path").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Path")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("permissions_boundary_usage_count").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("PermissionsBoundaryUsageCount")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("policy_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("PolicyName")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("policy_version_list").ColumnType(schema.ColumnTypeJSON).
-			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any,
-				task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
-
-				extractor := func() (any, error) {
-					r := result.(types.ManagedPolicyDetail)
-					for i := range r.PolicyVersionList {
-						if v, err := url.PathUnescape(aws.ToString(r.PolicyVersionList[i].Document)); err == nil {
-							r.PolicyVersionList[i].Document = &v
-						} else {
-
-						}
-					}
-					return r.PolicyVersionList, nil
-				}
-				extractResultValue, err := extractor()
-				if err != nil {
-					return nil, schema.NewDiagnostics().AddErrorColumnValueExtractor(task.Table, column, err)
-				} else {
-					return extractResultValue, nil
-				}
-			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("attachment_count").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("default_version_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("path").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("update_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
+			Extractor(column_value_extractor.StructSelector("PolicyVersionList")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("attachment_count").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("AttachmentCount")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
+			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 	}
 }
 

@@ -66,20 +66,24 @@ func (x *TableAwsLightsailDatabaseEventsGenerator) GetExpandClientTask() func(ct
 
 func (x *TableAwsLightsailDatabaseEventsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("aws_lightsail_databases_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_lightsail_databases.selefra_id").
-			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("database_arn").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("created_at").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("resource").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
-			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("created_at").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("CreatedAt")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("message").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Message")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("aws_lightsail_databases_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_lightsail_databases.selefra_id").
+			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("event_categories").ColumnType(schema.ColumnTypeStringArray).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("message").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("database_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("event_categories").ColumnType(schema.ColumnTypeStringArray).
+			Extractor(column_value_extractor.StructSelector("EventCategories")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("resource").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Resource")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
 	}
 }
 

@@ -2,13 +2,13 @@ package apigatewayv2
 
 import (
 	"context"
+	"github.com/selefra/selefra-provider-aws/apigatewayv2fix"
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/apigatewayv2"
 	"github.com/aws/aws-sdk-go-v2/service/apigatewayv2/types"
-	"github.com/selefra/selefra-provider-aws/apigatewayv2fix"
 	"github.com/selefra/selefra-provider-aws/aws_client"
 	"github.com/selefra/selefra-provider-aws/table_schema_generator"
 	"github.com/selefra/selefra-provider-sdk/provider/schema"
@@ -70,17 +70,6 @@ func (x *TableAwsApigatewayv2DomainNamesGenerator) GetExpandClientTask() func(ct
 
 func (x *TableAwsApigatewayv2DomainNamesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
-			Extractor(column_value_extractor.UUID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("domain_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("api_mapping_selection_expression").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("domain_name_configurations").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("mutual_tls_authentication").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
 
@@ -106,6 +95,22 @@ func (x *TableAwsApigatewayv2DomainNamesGenerator) GetColumns() []*schema.Column
 					Resource:	strings.Join(ids, "/"),
 				}.String(), nil
 			})).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("api_mapping_selection_expression").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ApiMappingSelectionExpression")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("domain_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DomainName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("domain_name_configurations").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("DomainNameConfigurations")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("mutual_tls_authentication").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("MutualTlsAuthentication")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Tags")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 	}
 }
 

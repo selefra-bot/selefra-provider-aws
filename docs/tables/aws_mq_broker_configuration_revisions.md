@@ -4,15 +4,15 @@
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| broker_configuration_arn | string | X | √ |  | 
-| data | json | X | √ |  | 
-| configuration_id | string | X | √ |  | 
+| data | string | X | √ |  | 
 | description | string | X | √ |  | 
 | result_metadata | json | X | √ |  | 
-| aws_mq_broker_configurations_selefra_id | string | X | X | fk to aws_mq_broker_configurations.selefra_id | 
 | account_id | string | X | √ |  | 
-| region | string | X | √ |  | 
+| broker_configuration_arn | string | X | √ |  | 
+| configuration_id | string | X | √ |  | 
 | created | timestamp | X | √ |  | 
 | selefra_id | string | √ | √ | random id | 
+| aws_mq_broker_configurations_selefra_id | string | X | X | fk to aws_mq_broker_configurations.selefra_id | 
+| region | string | X | √ |  | 
 
 

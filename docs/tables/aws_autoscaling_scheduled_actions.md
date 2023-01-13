@@ -11,19 +11,20 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
+| auto_scaling_group_name | string | X | √ |  | 
+| end_time | timestamp | X | √ |  | 
+| time_zone | string | X | √ |  | 
+| account_id | string | X | √ |  | 
+| start_time | timestamp | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
+| max_size | big_int | X | √ |  | 
+| scheduled_action_arn | string | X | √ |  | 
 | scheduled_action_name | string | X | √ |  | 
 | arn | string | √ | √ |  | 
-| auto_scaling_group_name | string | X | √ |  | 
-| desired_capacity | int | X | √ |  | 
-| end_time | timestamp | X | √ |  | 
+| desired_capacity | big_int | X | √ |  | 
+| min_size | big_int | X | √ |  | 
 | recurrence | string | X | √ |  | 
-| start_time | timestamp | X | √ |  | 
 | time | timestamp | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
 | region | string | X | √ |  | 
-| min_size | int | X | √ |  | 
-| account_id | string | X | √ |  | 
-| time_zone | string | X | √ |  | 
-| max_size | int | X | √ |  | 
 
 

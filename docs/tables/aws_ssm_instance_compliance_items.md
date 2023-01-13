@@ -3,7 +3,7 @@
 ## Primary Keys 
 
 ```
-id, instance_arn
+instance_arn
 ```
 
 
@@ -11,19 +11,19 @@ id, instance_arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
+| resource_type | string | X | √ |  | 
+| aws_ssm_instances_selefra_id | string | X | X | fk to aws_ssm_instances.selefra_id | 
+| account_id | string | X | √ |  | 
+| instance_arn | string | √ | √ |  | 
+| compliance_type | string | X | √ |  | 
+| execution_summary | json | X | √ |  | 
+| title | string | X | √ |  | 
+| region | string | X | √ |  | 
+| id | string | X | √ |  | 
 | details | json | X | √ |  | 
 | resource_id | string | X | √ |  | 
 | severity | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
 | status | string | X | √ |  | 
-| title | string | X | √ |  | 
-| aws_ssm_instances_selefra_id | string | X | X | fk to aws_ssm_instances.selefra_id | 
-| compliance_type | string | X | √ |  | 
-| resource_type | string | X | √ |  | 
-| account_id | string | X | √ |  | 
-| region | string | X | √ |  | 
-| id | string | X | √ |  | 
-| instance_arn | string | X | √ |  | 
-| execution_summary | json | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
 
 

@@ -67,7 +67,8 @@ func (x *TableAwsLambdaLayersGenerator) GetExpandClientTask() func(ctx context.C
 
 func (x *TableAwsLambdaLayersGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("layer_name").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("layer_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("LayerName")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
@@ -76,8 +77,10 @@ func (x *TableAwsLambdaLayersGenerator) GetColumns() []*schema.Column {
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("LayerArn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("latest_matching_version").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("layer_arn").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("latest_matching_version").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("LatestMatchingVersion")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("layer_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("LayerArn")).Build(),
 	}
 }
 

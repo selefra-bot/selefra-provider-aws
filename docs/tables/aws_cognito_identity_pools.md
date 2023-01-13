@@ -11,20 +11,21 @@ account_id, region, id
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| arn | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
+| region | string | X | √ |  | 
+| allow_unauthenticated_identities | bool | X | √ |  | 
 | identity_pool_name | string | X | √ |  | 
+| open_id_connect_provider_ar_ns | string_array | X | √ |  | 
+| arn | string | X | √ |  | 
+| identity_pool_id | string | X | √ |  | 
 | allow_classic_flow | bool | X | √ |  | 
 | cognito_identity_providers | json | X | √ |  | 
-| identity_pool_tags | json | X | √ |  | 
-| open_id_connect_provider_ar_ns | string_array | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
 | account_id | string | X | √ |  | 
-| result_metadata | json | X | √ |  | 
-| region | string | X | √ |  | 
 | id | string | X | √ |  | 
-| allow_unauthenticated_identities | bool | X | √ |  | 
 | developer_provider_name | string | X | √ |  | 
-| saml_provider_ar_ns | string_array | X | √ |  | 
 | supported_login_providers | json | X | √ |  | 
+| saml_provider_ar_ns | string_array | X | √ |  | 
+| identity_pool_tags | json | X | √ |  | 
+| result_metadata | json | X | √ |  | 
 
 

@@ -68,27 +68,16 @@ func (x *TableAwsApigatewayv2ApiStagesGenerator) GetExpandClientTask() func(ctx 
 
 func (x *TableAwsApigatewayv2ApiStagesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("stage_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("default_route_settings").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("deployment_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("route_settings").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
-			Extractor(column_value_extractor.UUID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("access_log_settings").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("AccessLogSettings")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("stage_variables").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("StageVariables")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Tags")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("api_id").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.ParentColumnValue("id")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("auto_deploy").ColumnType(schema.ColumnTypeBool).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("client_certificate_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("stage_variables").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("aws_apigatewayv2_apis_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_apigatewayv2_apis.selefra_id").
-			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("access_log_settings").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("api_gateway_managed").ColumnType(schema.ColumnTypeBool).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("api_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
 
@@ -116,11 +105,36 @@ func (x *TableAwsApigatewayv2ApiStagesGenerator) GetColumns() []*schema.Column {
 					Resource:	strings.Join(ids, "/"),
 				}.String(), nil
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("created_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("last_deployment_status_message").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("last_updated_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("api_arn").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("stage_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("StageName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("api_gateway_managed").ColumnType(schema.ColumnTypeBool).
+			Extractor(column_value_extractor.StructSelector("ApiGatewayManaged")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("created_date").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("CreatedDate")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("default_route_settings").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("DefaultRouteSettings")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Description")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("last_deployment_status_message").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("LastDeploymentStatusMessage")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("last_updated_date").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("LastUpdatedDate")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("route_settings").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("RouteSettings")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("auto_deploy").ColumnType(schema.ColumnTypeBool).
+			Extractor(column_value_extractor.StructSelector("AutoDeploy")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("client_certificate_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ClientCertificateId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("deployment_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DeploymentId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("aws_apigatewayv2_apis_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_apigatewayv2_apis.selefra_id").
+			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 	}
 }
 

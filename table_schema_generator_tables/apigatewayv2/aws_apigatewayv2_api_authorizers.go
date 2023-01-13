@@ -68,10 +68,12 @@ func (x *TableAwsApigatewayv2ApiAuthorizersGenerator) GetExpandClientTask() func
 
 func (x *TableAwsApigatewayv2ApiAuthorizersGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("jwt_configuration").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("api_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("api_id").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.ParentColumnValue("id")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("identity_validation_expression").ColumnType(schema.ColumnTypeString).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
 
@@ -92,32 +94,41 @@ func (x *TableAwsApigatewayv2ApiAuthorizersGenerator) GetColumns() []*schema.Col
 
 				cl := client.(*aws_client.Client)
 				return arn.ARN{
-					Partition: cl.Partition,
-					Service:   "apigateway",
-					Region:    cl.Region,
-					AccountID: "",
-					Resource:  strings.Join(ids, "/"),
+					Partition:	cl.Partition,
+					Service:	"apigateway",
+					Region:		cl.Region,
+					AccountID:	"",
+					Resource:	strings.Join(ids, "/"),
 				}.String(), nil
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_type").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("enable_simple_responses").ColumnType(schema.ColumnTypeBool).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("identity_source").ColumnType(schema.ColumnTypeStringArray).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_payload_format_version").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("AuthorizerPayloadFormatVersion")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
 			Extractor(column_value_extractor.UUID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_payload_format_version").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_result_ttl_in_seconds").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_credentials_arn").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_id").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Name")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("AuthorizerId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_result_ttl_in_seconds").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("AuthorizerResultTtlInSeconds")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("enable_simple_responses").ColumnType(schema.ColumnTypeBool).
+			Extractor(column_value_extractor.StructSelector("EnableSimpleResponses")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("identity_source").ColumnType(schema.ColumnTypeStringArray).
+			Extractor(column_value_extractor.StructSelector("IdentitySource")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_credentials_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("AuthorizerCredentialsArn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("identity_validation_expression").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("IdentityValidationExpression")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("jwt_configuration").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("JwtConfiguration")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_type").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("AuthorizerType")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_uri").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("AuthorizerUri")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("aws_apigatewayv2_apis_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_apigatewayv2_apis.selefra_id").
 			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("api_arn").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_uri").ColumnType(schema.ColumnTypeString).Build(),
 	}
 }
 

@@ -5,14 +5,14 @@
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
 | description | string | X | √ |  | 
+| id | string | X | √ |  | 
 | aws_apigateway_rest_apis_selefra_id | string | X | X | fk to aws_apigateway_rest_apis.selefra_id | 
-| account_id | string | X | √ |  | 
+| region | string | X | √ |  | 
 | rest_api_arn | string | X | √ |  | 
 | arn | string | X | √ |  | 
-| api_summary | json | X | √ |  | 
 | created_date | timestamp | X | √ |  | 
-| id | string | X | √ |  | 
+| account_id | string | X | √ |  | 
+| api_summary | json | X | √ |  | 
 | selefra_id | string | √ | √ | random id | 
-| region | string | X | √ |  | 
 
 

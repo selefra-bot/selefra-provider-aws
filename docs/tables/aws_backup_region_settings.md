@@ -11,11 +11,11 @@ account_id, region
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
 | account_id | string | X | √ |  | 
 | region | string | X | √ |  | 
 | resource_type_management_preference | json | X | √ |  | 
 | resource_type_opt_in_preference | json | X | √ |  | 
 | result_metadata | json | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
 
 

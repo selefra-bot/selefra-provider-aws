@@ -4,28 +4,28 @@
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| agent_update_status | string | X | √ |  | 
+| agent_connected | bool | X | √ |  | 
 | attributes | json | X | √ |  | 
-| container_instance_arn | string | X | √ |  | 
 | ec2_instance_id | string | X | √ |  | 
+| health_status | json | X | √ |  | 
 | pending_tasks_count | int | X | √ |  | 
+| registered_at | timestamp | X | √ |  | 
+| status | string | X | √ |  | 
+| selefra_id | string | √ | √ | random id | 
+| region | string | X | √ |  | 
+| capacity_provider_name | string | X | √ |  | 
+| registered_resources | json | X | √ |  | 
 | remaining_resources | json | X | √ |  | 
 | tags | json | X | √ |  | 
-| agent_connected | bool | X | √ |  | 
-| selefra_id | string | √ | √ | random id | 
-| aws_ecs_clusters_selefra_id | string | X | X | fk to aws_ecs_clusters.selefra_id | 
-| status | string | X | √ |  | 
-| status_reason | string | X | √ |  | 
-| running_tasks_count | int | X | √ |  | 
-| account_id | string | X | √ |  | 
-| attachments | json | X | √ |  | 
-| capacity_provider_name | string | X | √ |  | 
-| region | string | X | √ |  | 
-| cluster_arn | string | X | √ |  | 
-| registered_resources | json | X | √ |  | 
-| version | int | X | √ |  | 
 | version_info | json | X | √ |  | 
-| health_status | json | X | √ |  | 
-| registered_at | timestamp | X | √ |  | 
+| container_instance_arn | string | X | √ |  | 
+| status_reason | string | X | √ |  | 
+| aws_ecs_clusters_selefra_id | string | X | X | fk to aws_ecs_clusters.selefra_id | 
+| account_id | string | X | √ |  | 
+| cluster_arn | string | X | √ |  | 
+| agent_update_status | string | X | √ |  | 
+| attachments | json | X | √ |  | 
+| running_tasks_count | int | X | √ |  | 
+| version | int | X | √ |  | 
 
 

@@ -42,7 +42,7 @@ func (x *TableAwsEc2EgressOnlyInternetGatewaysGenerator) GetDataSource() *schema
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			c := client.(*aws_client.Client)
-			svc := c.AwsServices().EC2
+			svc := c.AwsServices().Ec2
 			input := ec2.DescribeEgressOnlyInternetGatewaysInput{}
 			for {
 				output, err := svc.DescribeEgressOnlyInternetGateways(ctx, &input)
@@ -67,6 +67,10 @@ func (x *TableAwsEc2EgressOnlyInternetGatewaysGenerator) GetExpandClientTask() f
 
 func (x *TableAwsEc2EgressOnlyInternetGatewaysGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
+		table_schema_generator.NewColumnBuilder().ColumnName("attachments").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Attachments")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("egress_only_internet_gateway_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("EgressOnlyInternetGatewayId")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
@@ -85,7 +89,7 @@ func (x *TableAwsEc2EgressOnlyInternetGatewaysGenerator) GetColumns() []*schema.
 						Service:	"ec2",
 						Region:		cl.Region,
 						AccountID:	cl.AccountID,
-						Resource:	"egress_only_internet_gateway/" + aws.ToString(item.EgressOnlyInternetGatewayId),
+						Resource:	"egress-only-internet-gateway/" + aws.ToString(item.EgressOnlyInternetGatewayId),
 					}
 					return a.String(), nil
 				}
@@ -96,9 +100,8 @@ func (x *TableAwsEc2EgressOnlyInternetGatewaysGenerator) GetColumns() []*schema.
 					return extractResultValue, nil
 				}
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("attachments").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("egress_only_internet_gateway_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Tags")).Build(),
 	}
 }
 

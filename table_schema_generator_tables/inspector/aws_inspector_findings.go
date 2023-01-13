@@ -29,11 +29,7 @@ func (x *TableAwsInspectorFindingsGenerator) GetVersion() uint64 {
 }
 
 func (x *TableAwsInspectorFindingsGenerator) GetOptions() *schema.TableOptions {
-	return &schema.TableOptions{
-		PrimaryKeys: []string{
-			"arn",
-		},
-	}
+	return &schema.TableOptions{}
 }
 
 func (x *TableAwsInspectorFindingsGenerator) GetDataSource() *schema.DataSource {
@@ -75,32 +71,48 @@ func (x *TableAwsInspectorFindingsGenerator) GetExpandClientTask() func(ctx cont
 
 func (x *TableAwsInspectorFindingsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("indicator_of_compromise").ColumnType(schema.ColumnTypeBool).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("schema_version").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("attributes").ColumnType(schema.ColumnTypeJSON).
-			Extractor(aws_client.TagsExtractor("Attributes")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("user_attributes").ColumnType(schema.ColumnTypeJSON).
-			Extractor(aws_client.TagsExtractor("UserAttributes")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("created_at").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("confidence").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("service_attributes").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Arn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("confidence").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("Confidence")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("schema_version").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("SchemaVersion")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("title").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Title")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("updated_at").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("UpdatedAt")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("severity").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Severity")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Id")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("indicator_of_compromise").ColumnType(schema.ColumnTypeBool).
+			Extractor(column_value_extractor.StructSelector("IndicatorOfCompromise")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("recommendation").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Recommendation")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("updated_at").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("numeric_severity").ColumnType(schema.ColumnTypeFloat).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("severity").ColumnType(schema.ColumnTypeString).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("asset_type").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("recommendation").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("asset_attributes").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("service").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("title").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("attributes").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Attributes")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("user_attributes").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("UserAttributes")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("asset_type").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("AssetType")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("service_attributes").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ServiceAttributes")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("created_at").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("CreatedAt")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("asset_attributes").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("AssetAttributes")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Description")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("numeric_severity").ColumnType(schema.ColumnTypeFloat).
+			Extractor(column_value_extractor.StructSelector("NumericSeverity")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("service").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Service")).Build(),
 	}
 }
 

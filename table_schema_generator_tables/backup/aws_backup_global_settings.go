@@ -44,14 +44,6 @@ func (x *TableAwsBackupGlobalSettingsGenerator) GetDataSource() *schema.DataSour
 
 			output, err := svc.DescribeGlobalSettings(ctx, &input)
 			if err != nil {
-				if aws_client.IgnoreAccessDeniedServiceDisabled(err) || aws_client.IsAWSError(err, "ERROR_9601") {
-
-					return nil
-				}
-				if aws_client.IsAWSError(err, "ERROR_2502") {
-
-					return nil
-				}
 				return schema.NewDiagnosticsErrorPullTable(task.Table, err)
 
 			}
@@ -71,9 +63,12 @@ func (x *TableAwsBackupGlobalSettingsGenerator) GetColumns() []*schema.Column {
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("global_settings").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("last_update_time").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("global_settings").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("GlobalSettings")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("last_update_time").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("LastUpdateTime")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ResultMetadata")).Build(),
 	}
 }
 

@@ -3,7 +3,7 @@
 ## Primary Keys 
 
 ```
-account_id, region, registry_id
+account_id, region
 ```
 
 
@@ -11,10 +11,11 @@ account_id, region, registry_id
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| registry_id | string | X | √ |  | 
-| policy_text | json | X | √ |  | 
+| policy_text | string | X | √ |  | 
+| result_metadata | json | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
 | account_id | string | X | √ |  | 
 | region | string | X | √ |  | 
+| registry_id | string | X | √ |  | 
 
 

@@ -68,6 +68,14 @@ func (x *TableAwsDirectconnectGatewaysGenerator) GetExpandClientTask() func(ctx 
 
 func (x *TableAwsDirectconnectGatewaysGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("amazon_side_asn").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("AmazonSideAsn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("direct_connect_gateway_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DirectConnectGatewayId")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
 
@@ -84,32 +92,31 @@ func (x *TableAwsDirectconnectGatewaysGenerator) GetColumns() []*schema.Column {
 
 				cl := client.(*aws_client.Client)
 				return arn.ARN{
-					Partition: cl.Partition,
-					Service:   "directconnect",
-					Region:    "",
-					AccountID: cl.AccountID,
-					Resource:  strings.Join(ids, "/"),
+					Partition:	cl.Partition,
+					Service:	"directconnect",
+					Region:		"",
+					AccountID:	cl.AccountID,
+					Resource:	strings.Join(ids, "/"),
 				}.String(), nil
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("amazon_side_asn").ColumnType(schema.ColumnTypeBigInt).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("direct_connect_gateway_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("direct_connect_gateway_state").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("owner_account").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("state_change_error").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("id").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("DirectConnectGatewayId")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("direct_connect_gateway_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DirectConnectGatewayName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("direct_connect_gateway_state").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("DirectConnectGatewayState")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("owner_account").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("OwnerAccount")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("state_change_error").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("StateChangeError")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
+			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 	}
 }
 
 func (x *TableAwsDirectconnectGatewaysGenerator) GetSubTables() []*schema.Table {
 	return []*schema.Table{
-		table_schema_generator.GenTableSchema(&TableAwsDirectconnectGatewayAssociationsGenerator{}),
 		table_schema_generator.GenTableSchema(&TableAwsDirectconnectGatewayAttachmentsGenerator{}),
+		table_schema_generator.GenTableSchema(&TableAwsDirectconnectGatewayAssociationsGenerator{}),
 	}
 }

@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/apigatewayv2"
 	"github.com/aws/aws-sdk-go-v2/service/apigatewayv2/types"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/selefra/selefra-provider-aws/aws_client"
 	"github.com/selefra/selefra-provider-aws/table_schema_generator"
 	"github.com/selefra/selefra-provider-sdk/provider/schema"
@@ -65,15 +65,14 @@ func (x *TableAwsApigatewayv2VpcLinksGenerator) GetExpandClientTask() func(ctx c
 
 func (x *TableAwsApigatewayv2VpcLinksGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("vpc_link_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("created_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("vpc_link_version").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("vpc_link_status_message").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
-			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Name")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("created_date").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("CreatedDate")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Tags")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("vpc_link_status_message").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("VpcLinkStatusMessage")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
@@ -99,10 +98,20 @@ func (x *TableAwsApigatewayv2VpcLinksGenerator) GetColumns() []*schema.Column {
 					Resource:	strings.Join(ids, "/"),
 				}.String(), nil
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("security_group_ids").ColumnType(schema.ColumnTypeStringArray).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("subnet_ids").ColumnType(schema.ColumnTypeStringArray).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("vpc_link_status").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("subnet_ids").ColumnType(schema.ColumnTypeStringArray).
+			Extractor(column_value_extractor.StructSelector("SubnetIds")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("vpc_link_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("VpcLinkId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("vpc_link_status").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("VpcLinkStatus")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("vpc_link_version").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("VpcLinkVersion")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("security_group_ids").ColumnType(schema.ColumnTypeStringArray).
+			Extractor(column_value_extractor.StructSelector("SecurityGroupIds")).Build(),
 	}
 }
 

@@ -68,24 +68,12 @@ func (x *TableAwsApigatewayv2ApiRoutesGenerator) GetExpandClientTask() func(ctx 
 
 func (x *TableAwsApigatewayv2ApiRoutesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
+		table_schema_generator.NewColumnBuilder().ColumnName("authorization_scopes").ColumnType(schema.ColumnTypeStringArray).
+			Extractor(column_value_extractor.StructSelector("AuthorizationScopes")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("route_response_selection_expression").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RouteResponseSelectionExpression")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("api_key_required").ColumnType(schema.ColumnTypeBool).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("authorization_type").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("model_selection_expression").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("api_gateway_managed").ColumnType(schema.ColumnTypeBool).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("route_response_selection_expression").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("route_key").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("operation_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("request_parameters").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("target").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("aws_apigatewayv2_apis_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_apigatewayv2_apis.selefra_id").
-			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("api_arn").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("api_id").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.ParentColumnValue("id")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
@@ -117,9 +105,34 @@ func (x *TableAwsApigatewayv2ApiRoutesGenerator) GetColumns() []*schema.Column {
 					Resource:	strings.Join(ids, "/"),
 				}.String(), nil
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("authorization_scopes").ColumnType(schema.ColumnTypeStringArray).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("request_models").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("route_id").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("route_key").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RouteKey")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("authorizer_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("AuthorizerId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("aws_apigatewayv2_apis_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_apigatewayv2_apis.selefra_id").
+			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("api_gateway_managed").ColumnType(schema.ColumnTypeBool).
+			Extractor(column_value_extractor.StructSelector("ApiGatewayManaged")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("authorization_type").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("AuthorizationType")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("target").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Target")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("request_parameters").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("RequestParameters")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("route_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RouteId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("api_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("api_key_required").ColumnType(schema.ColumnTypeBool).
+			Extractor(column_value_extractor.StructSelector("ApiKeyRequired")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("model_selection_expression").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ModelSelectionExpression")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("operation_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("OperationName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("request_models").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("RequestModels")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
 			Extractor(column_value_extractor.UUID()).Build(),
 	}

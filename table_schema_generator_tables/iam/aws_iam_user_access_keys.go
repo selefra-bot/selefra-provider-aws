@@ -51,19 +51,9 @@ func (x *TableAwsIamUserAccessKeysGenerator) GetDataSource() *schema.DataSource 
 				for i, key := range output.AccessKeyMetadata {
 					switch i {
 					case 0:
-						rotated := task.ParentRow.GetOrDefault("access_key_1_last_rotated", nil)
-						if rotated != nil {
-							keys[i] = AccessKeyWrapper{AccessKeyMetadata: key, LastRotated: rotated.(time.Time)}
-						} else {
-							keys[i] = AccessKeyWrapper{AccessKeyMetadata: key, LastRotated: *key.CreateDate}
-						}
+						keys[i] = AccessKeyWrapper{AccessKeyMetadata: key, LastRotated: *key.CreateDate}
 					case 1:
-						rotated := task.ParentRow.GetOrDefault("access_key_2_last_rotated", nil)
-						if rotated != nil {
-							keys[i] = AccessKeyWrapper{AccessKeyMetadata: key, LastRotated: rotated.(time.Time)}
-						} else {
-							keys[i] = AccessKeyWrapper{AccessKeyMetadata: key, LastRotated: *key.CreateDate}
-						}
+						keys[i] = AccessKeyWrapper{AccessKeyMetadata: key, LastRotated: *key.CreateDate}
 					default:
 						keys[i] = AccessKeyWrapper{AccessKeyMetadata: key}
 					}
@@ -90,21 +80,20 @@ func (x *TableAwsIamUserAccessKeysGenerator) GetExpandClientTask() func(ctx cont
 
 func (x *TableAwsIamUserAccessKeysGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("last_rotated").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
-			Extractor(column_value_extractor.UUID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("last_used_service_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("create_date").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("status").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("user_name").ColumnType(schema.ColumnTypeString).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("user_arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("user_id").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.ParentColumnValue("id")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("last_used_service_name").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("access_key_metadata").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("AccessKeyMetadata")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("last_rotated").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("LastRotated")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("last_used").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("access_key_id").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("aws_iam_users_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_iam_users.selefra_id").
 			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
 	}

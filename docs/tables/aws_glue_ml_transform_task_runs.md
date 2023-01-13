@@ -4,20 +4,20 @@
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| region | string | X | √ |  | 
+| execution_time | big_int | X | √ |  | 
 | last_modified_on | timestamp | X | √ |  | 
-| selefra_id | string | √ | √ | random id | 
+| started_on | timestamp | X | √ |  | 
+| task_run_id | string | X | √ |  | 
 | aws_glue_ml_transforms_selefra_id | string | X | X | fk to aws_glue_ml_transforms.selefra_id | 
+| completed_on | timestamp | X | √ |  | 
+| properties | json | X | √ |  | 
+| region | string | X | √ |  | 
 | ml_transform_arn | string | X | √ |  | 
 | error_string | string | X | √ |  | 
-| execution_time | int | X | √ |  | 
-| log_group_name | string | X | √ |  | 
-| properties | json | X | √ |  | 
-| account_id | string | X | √ |  | 
-| completed_on | timestamp | X | √ |  | 
-| started_on | timestamp | X | √ |  | 
 | status | string | X | √ |  | 
-| task_run_id | string | X | √ |  | 
 | transform_id | string | X | √ |  | 
+| account_id | string | X | √ |  | 
+| log_group_name | string | X | √ |  | 
+| selefra_id | string | √ | √ | random id | 
 
 

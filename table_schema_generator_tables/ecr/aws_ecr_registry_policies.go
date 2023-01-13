@@ -32,7 +32,6 @@ func (x *TableAwsEcrRegistryPoliciesGenerator) GetOptions() *schema.TableOptions
 		PrimaryKeys: []string{
 			"account_id",
 			"region",
-			"registry_id",
 		},
 	}
 }
@@ -41,7 +40,7 @@ func (x *TableAwsEcrRegistryPoliciesGenerator) GetDataSource() *schema.DataSourc
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			c := client.(*aws_client.Client)
-			svc := c.AwsServices().ECR
+			svc := c.AwsServices().Ecr
 			output, err := svc.GetRegistryPolicy(ctx, &ecr.GetRegistryPolicyInput{})
 			if err != nil {
 				if aws_client.IsAWSError(err, "RegistryPolicyNotFoundException") {
@@ -62,15 +61,18 @@ func (x *TableAwsEcrRegistryPoliciesGenerator) GetExpandClientTask() func(ctx co
 
 func (x *TableAwsEcrRegistryPoliciesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("policy_text").ColumnType(schema.ColumnTypeJSON).
-			Extractor(aws_client.MarshaledJsonExtractor("PolicyText")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("policy_text").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("PolicyText")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ResultMetadata")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("registry_id").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("registry_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RegistryId")).Build(),
 	}
 }
 

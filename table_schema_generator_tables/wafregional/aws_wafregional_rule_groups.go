@@ -2,8 +2,9 @@ package wafregional
 
 import (
 	"context"
-
+	"fmt"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
 	"github.com/aws/aws-sdk-go-v2/service/wafregional/types"
 	"github.com/selefra/selefra-provider-aws/aws_client"
@@ -41,7 +42,7 @@ func (x *TableAwsWafregionalRuleGroupsGenerator) GetDataSource() *schema.DataSou
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			cl := client.(*aws_client.Client)
-			svc := cl.AwsServices().WafRegional
+			svc := cl.AwsServices().Wafregional
 			var params wafregional.ListRuleGroupsInput
 			for {
 				result, err := svc.ListRuleGroups(ctx, &params, func(o *wafregional.Options) {
@@ -84,9 +85,6 @@ func (x *TableAwsWafregionalRuleGroupsGenerator) GetExpandClientTask() func(ctx 
 
 func (x *TableAwsWafregionalRuleGroupsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
@@ -94,10 +92,7 @@ func (x *TableAwsWafregionalRuleGroupsGenerator) GetColumns() []*schema.Column {
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any,
 				task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
-				ruleGroupARN := func(meta any, id string) string {
-					cl := meta.(*aws_client.Client)
-					return cl.ARN("waf-regional", "rulegroup", id)
-				}
+
 				extractor := func() (any, error) {
 					return ruleGroupARN(client, *result.(types.RuleGroup).RuleGroupId), nil
 				}
@@ -109,11 +104,28 @@ func (x *TableAwsWafregionalRuleGroupsGenerator) GetColumns() []*schema.Column {
 				}
 			})).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Description("`Rule group tags.`").Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("rule_group_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("metric_name").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("rule_group_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RuleGroupId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("metric_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("MetricName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Name")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
+			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 	}
 }
 
 func (x *TableAwsWafregionalRuleGroupsGenerator) GetSubTables() []*schema.Table {
 	return nil
+}
+
+func ruleGroupARN(client any, id string) string {
+	cl := client.(*aws_client.Client)
+	return arn.ARN{
+		Partition:	cl.Partition,
+		Service:	"waf-regional",
+		Region:		cl.Region,
+		AccountID:	cl.AccountID,
+		Resource:	fmt.Sprintf("rulegroup/%s", id),
+	}.String()
 }

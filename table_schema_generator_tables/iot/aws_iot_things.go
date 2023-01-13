@@ -45,7 +45,7 @@ func (x *TableAwsIotThingsGenerator) GetDataSource() *schema.DataSource {
 			}
 			c := client.(*aws_client.Client)
 
-			svc := c.AwsServices().IOT
+			svc := c.AwsServices().Iot
 			for {
 				response, err := svc.ListThings(ctx, &input)
 				if err != nil {
@@ -73,8 +73,6 @@ func (x *TableAwsIotThingsGenerator) GetColumns() []*schema.Column {
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("thing_name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("version").ColumnType(schema.ColumnTypeBigInt).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("principals").ColumnType(schema.ColumnTypeStringArray).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any,
 				task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
@@ -82,10 +80,10 @@ func (x *TableAwsIotThingsGenerator) GetColumns() []*schema.Column {
 				extractor := func() (any, error) {
 					i := result.(types.ThingAttribute)
 					cl := client.(*aws_client.Client)
-					svc := cl.AwsServices().IOT
+					svc := cl.AwsServices().Iot
 					input := iot.ListThingPrincipalsInput{
-						ThingName:  i.ThingName,
-						MaxResults: aws.Int32(250),
+						ThingName:	i.ThingName,
+						MaxResults:	aws.Int32(250),
 					}
 					var principals []string
 
@@ -111,10 +109,18 @@ func (x *TableAwsIotThingsGenerator) GetColumns() []*schema.Column {
 					return extractResultValue, nil
 				}
 			})).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("thing_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ThingArn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("version").ColumnType(schema.ColumnTypeBigInt).
+			Extractor(column_value_extractor.StructSelector("Version")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("ThingArn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("attributes").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("thing_type_name").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("attributes").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Attributes")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("thing_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ThingName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("thing_type_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("ThingTypeName")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 	}

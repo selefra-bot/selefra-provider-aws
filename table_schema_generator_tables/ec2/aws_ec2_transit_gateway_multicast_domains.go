@@ -48,7 +48,7 @@ func (x *TableAwsEc2TransitGatewayMulticastDomainsGenerator) GetDataSource() *sc
 			}
 
 			c := client.(*aws_client.Client)
-			svc := c.AwsServices().EC2
+			svc := c.AwsServices().Ec2
 			for {
 				output, err := svc.DescribeTransitGatewayMulticastDomains(ctx, &config)
 				if err != nil {
@@ -72,24 +72,32 @@ func (x *TableAwsEc2TransitGatewayMulticastDomainsGenerator) GetExpandClientTask
 
 func (x *TableAwsEc2TransitGatewayMulticastDomainsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("state").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("transit_gateway_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("transit_gateway_multicast_domain_arn").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("transit_gateway_multicast_domain_id").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("transit_gateway_multicast_domain_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("TransitGatewayMulticastDomainId")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
 			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("transit_gateway_arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("creation_time").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("owner_id").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Tags")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("creation_time").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("CreationTime")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("aws_ec2_transit_gateways_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_ec2_transit_gateways.selefra_id").
 			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("options").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("options").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Options")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("owner_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("OwnerId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("state").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("State")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("transit_gateway_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("TransitGatewayId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("transit_gateway_multicast_domain_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("TransitGatewayMulticastDomainArn")).Build(),
 	}
 }
 

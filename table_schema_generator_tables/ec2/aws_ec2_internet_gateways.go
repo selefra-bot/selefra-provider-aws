@@ -43,7 +43,7 @@ func (x *TableAwsEc2InternetGatewaysGenerator) GetDataSource() *schema.DataSourc
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			var config ec2.DescribeInternetGatewaysInput
 			c := client.(*aws_client.Client)
-			svc := c.AwsServices().EC2
+			svc := c.AwsServices().Ec2
 			for {
 				output, err := svc.DescribeInternetGateways(ctx, &config)
 				if err != nil {
@@ -67,6 +67,8 @@ func (x *TableAwsEc2InternetGatewaysGenerator) GetExpandClientTask() func(ctx co
 
 func (x *TableAwsEc2InternetGatewaysGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
+		table_schema_generator.NewColumnBuilder().ColumnName("owner_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("OwnerId")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
@@ -85,7 +87,7 @@ func (x *TableAwsEc2InternetGatewaysGenerator) GetColumns() []*schema.Column {
 						Service:	"ec2",
 						Region:		cl.Region,
 						AccountID:	cl.AccountID,
-						Resource:	"internet_gateways/" + aws.ToString(item.InternetGatewayId),
+						Resource:	"internet-gateway/" + aws.ToString(item.InternetGatewayId),
 					}
 					return a.String(), nil
 				}
@@ -96,10 +98,12 @@ func (x *TableAwsEc2InternetGatewaysGenerator) GetColumns() []*schema.Column {
 					return extractResultValue, nil
 				}
 			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("attachments").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("internet_gateway_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("owner_id").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Tags")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("attachments").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Attachments")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("internet_gateway_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("InternetGatewayId")).Build(),
 	}
 }
 

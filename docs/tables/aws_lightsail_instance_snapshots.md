@@ -1,34 +1,27 @@
 # Table: aws_lightsail_instance_snapshots
 
-## Primary Keys 
-
-```
-arn
-```
-
-
 ## Columns 
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| account_id | string | X | √ |  | 
-| from_attached_disks | json | X | √ |  | 
-| from_blueprint_id | string | X | √ |  | 
 | from_instance_name | string | X | √ |  | 
-| support_code | string | X | √ |  | 
-| region | string | X | √ |  | 
-| arn | string | √ | √ |  | 
-| created_at | timestamp | X | √ |  | 
-| progress | string | X | √ |  | 
-| state | string | X | √ |  | 
-| tags | json | X | √ |  | 
-| name | string | X | √ |  | 
-| size_in_gb | int | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
+| size_in_gb | big_int | X | √ |  | 
+| from_blueprint_id | string | X | √ |  | 
 | from_bundle_id | string | X | √ |  | 
-| from_instance_arn | string | X | √ |  | 
+| name | string | X | √ |  | 
+| account_id | string | X | √ |  | 
+| region | string | X | √ |  | 
 | is_from_auto_snapshot | bool | X | √ |  | 
+| progress | string | X | √ |  | 
+| created_at | timestamp | X | √ |  | 
+| from_instance_arn | string | X | √ |  | 
+| from_attached_disks | json | X | √ |  | 
 | location | json | X | √ |  | 
 | resource_type | string | X | √ |  | 
+| state | string | X | √ |  | 
+| support_code | string | X | √ |  | 
+| selefra_id | string | √ | √ | random id | 
+| arn | string | X | √ |  | 
+| tags | json | X | √ |  | 
 
 

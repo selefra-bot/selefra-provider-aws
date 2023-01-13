@@ -2,7 +2,6 @@ package wafv2
 
 import (
 	"context"
-	"net"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/wafv2"
@@ -31,18 +30,14 @@ func (x *TableAwsWafv2IpsetsGenerator) GetVersion() uint64 {
 }
 
 func (x *TableAwsWafv2IpsetsGenerator) GetOptions() *schema.TableOptions {
-	return &schema.TableOptions{
-		PrimaryKeys: []string{
-			"arn",
-		},
-	}
+	return &schema.TableOptions{}
 }
 
 func (x *TableAwsWafv2IpsetsGenerator) GetDataSource() *schema.DataSource {
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			cl := client.(*aws_client.Client)
-			svc := cl.AwsServices().WafV2
+			svc := cl.AwsServices().Wafv2
 
 			params := wafv2.ListIPSetsInput{
 				Scope:	cl.WAFScope,
@@ -56,7 +51,7 @@ func (x *TableAwsWafv2IpsetsGenerator) GetDataSource() *schema.DataSource {
 				}
 				aws_client.SendResults(resultChannel, result.IPSets, func(result any) (any, error) {
 					cl := client.(*aws_client.Client)
-					svc := cl.AwsServices().WafV2
+					svc := cl.AwsServices().Wafv2
 					s := result.(types.IPSetSummary)
 
 					info, err := svc.GetIPSet(
@@ -92,43 +87,25 @@ func (x *TableAwsWafv2IpsetsGenerator) GetExpandClientTask() func(ctx context.Co
 
 func (x *TableAwsWafv2IpsetsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
-			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("ip_address_version").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.StructSelector("IPAddressVersion")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("addresses").ColumnType(schema.ColumnTypeIpArray).
-			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any,
-				task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
-
-				extractor := func() (any, error) {
-					s := result.(*types.IPSet)
-					addrs := make([]*net.IPNet, 0, len(s.Addresses))
-					for _, a := range s.Addresses {
-						_, n, err := net.ParseCIDR(a)
-						if err != nil {
-							return nil, err
-						}
-						addrs = append(addrs, n)
-					}
-					return addrs, nil
-				}
-				extractResultValue, err := extractor()
-				if err != nil {
-					return nil, schema.NewDiagnostics().AddErrorColumnValueExtractor(task.Table, column, err)
-				} else {
-					return extractResultValue, nil
-				}
-			})).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("addresses").ColumnType(schema.ColumnTypeStringArray).
+			Extractor(column_value_extractor.StructSelector("Addresses")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Description")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
+			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("ARN")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("ip_address_version").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("IPAddressVersion")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Id")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Name")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("random id").
+			Extractor(column_value_extractor.UUID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
 	}
 }
 

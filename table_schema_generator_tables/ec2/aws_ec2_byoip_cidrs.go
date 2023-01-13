@@ -33,7 +33,6 @@ func (x *TableAwsEc2ByoipCidrsGenerator) GetOptions() *schema.TableOptions {
 		PrimaryKeys: []string{
 			"account_id",
 			"region",
-			"cidr",
 		},
 	}
 }
@@ -53,7 +52,7 @@ func (x *TableAwsEc2ByoipCidrsGenerator) GetDataSource() *schema.DataSource {
 			}[c.Region]; ok {
 				return nil
 			}
-			svc := c.AwsServices().EC2
+			svc := c.AwsServices().Ec2
 			for {
 				response, err := svc.DescribeByoipCidrs(ctx, &config)
 				if err != nil {
@@ -77,16 +76,20 @@ func (x *TableAwsEc2ByoipCidrsGenerator) GetExpandClientTask() func(ctx context.
 
 func (x *TableAwsEc2ByoipCidrsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
+		table_schema_generator.NewColumnBuilder().ColumnName("state").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("State")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("status_message").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("StatusMessage")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
+			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("cidr").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("state").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("status_message").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("cidr").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Cidr")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Description")).Build(),
 	}
 }
 

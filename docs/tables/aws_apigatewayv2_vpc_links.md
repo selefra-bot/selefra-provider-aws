@@ -4,18 +4,18 @@
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| vpc_link_version | string | X | √ |  | 
-| selefra_id | string | √ | √ | random id | 
+| name | string | X | √ |  | 
 | created_date | timestamp | X | √ |  | 
 | tags | json | X | √ |  | 
+| vpc_link_status_message | string | X | √ |  | 
+| region | string | X | √ |  | 
 | arn | string | X | √ |  | 
-| name | string | X | √ |  | 
-| security_group_ids | string_array | X | √ |  | 
 | subnet_ids | string_array | X | √ |  | 
 | vpc_link_id | string | X | √ |  | 
 | vpc_link_status | string | X | √ |  | 
+| vpc_link_version | string | X | √ |  | 
+| selefra_id | string | √ | √ | random id | 
 | account_id | string | X | √ |  | 
-| region | string | X | √ |  | 
-| vpc_link_status_message | string | X | √ |  | 
+| security_group_ids | string_array | X | √ |  | 
 
 

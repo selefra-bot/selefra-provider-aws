@@ -60,14 +60,16 @@ func (x *TableAwsGlueDatacatalogEncryptionSettingsGenerator) GetExpandClientTask
 
 func (x *TableAwsGlueDatacatalogEncryptionSettingsGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("encryption_at_rest").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("connection_password_encryption").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("connection_password_encryption").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ConnectionPasswordEncryption")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("encryption_at_rest").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("EncryptionAtRest")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
+			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 	}
 }
 

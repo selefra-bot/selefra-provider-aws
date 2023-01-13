@@ -11,38 +11,39 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| region | string | X | √ |  | 
-| authentication_strategy | string | X | √ |  | 
-| ldap_server_metadata | json | X | √ |  | 
-| logs | json | X | √ |  | 
-| publicly_accessible | bool | X | √ |  | 
-| security_groups | string_array | X | √ |  | 
-| storage_type | string | X | √ |  | 
-| users | json | X | √ |  | 
-| encryption_options | json | X | √ |  | 
-| engine_version | string | X | √ |  | 
-| pending_authentication_strategy | string | X | √ |  | 
-| pending_ldap_server_metadata | json | X | √ |  | 
-| arn | string | √ | √ |  | 
-| configurations | json | X | √ |  | 
 | result_metadata | json | X | √ |  | 
-| broker_name | string | X | √ |  | 
-| broker_state | string | X | √ |  | 
-| host_instance_type | string | X | √ |  | 
-| pending_host_instance_type | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
+| broker_id | string | X | √ |  | 
+| created | timestamp | X | √ |  | 
+| encryption_options | json | X | √ |  | 
+| maintenance_window_start_time | json | X | √ |  | 
+| pending_ldap_server_metadata | json | X | √ |  | 
+| publicly_accessible | bool | X | √ |  | 
 | actions_required | json | X | √ |  | 
 | deployment_mode | string | X | √ |  | 
-| engine_type | string | X | √ |  | 
-| subnet_ids | string_array | X | √ |  | 
-| auto_minor_version_upgrade | bool | X | √ |  | 
-| broker_id | string | X | √ |  | 
-| maintenance_window_start_time | json | X | √ |  | 
+| logs | json | X | √ |  | 
+| pending_authentication_strategy | string | X | √ |  | 
+| storage_type | string | X | √ |  | 
 | tags | json | X | √ |  | 
-| account_id | string | X | √ |  | 
 | broker_instances | json | X | √ |  | 
-| created | timestamp | X | √ |  | 
+| broker_name | string | X | √ |  | 
+| configurations | json | X | √ |  | 
+| authentication_strategy | string | X | √ |  | 
+| pending_host_instance_type | string | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
+| region | string | X | √ |  | 
+| broker_arn | string | X | √ |  | 
+| engine_version | string | X | √ |  | 
 | pending_engine_version | string | X | √ |  | 
+| broker_state | string | X | √ |  | 
+| host_instance_type | string | X | √ |  | 
+| subnet_ids | string_array | X | √ |  | 
+| account_id | string | X | √ |  | 
+| arn | string | √ | √ |  | 
+| engine_type | string | X | √ |  | 
+| users | json | X | √ |  | 
+| auto_minor_version_upgrade | bool | X | √ |  | 
+| ldap_server_metadata | json | X | √ |  | 
 | pending_security_groups | string_array | X | √ |  | 
+| security_groups | string_array | X | √ |  | 
 
 

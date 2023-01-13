@@ -3,7 +3,7 @@
 ## Primary Keys 
 
 ```
-account_id, region, cidr
+account_id, region
 ```
 
 

@@ -11,19 +11,19 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| last_modified_on | timestamp | X | √ |  | 
-| last_run | json | X | √ |  | 
-| max_concurrent_runs | int | X | √ |  | 
-| account_id | string | X | √ |  | 
+| tags | json | X | √ |  | 
 | default_run_properties | json | X | √ |  | 
-| description | string | X | √ |  | 
+| name | string | X | √ |  | 
+| account_id | string | X | √ |  | 
 | blueprint_details | json | X | √ |  | 
 | graph | json | X | √ |  | 
+| last_run | json | X | √ |  | 
+| arn | string | √ | √ |  | 
+| last_modified_on | timestamp | X | √ |  | 
+| description | string | X | √ |  | 
+| created_on | timestamp | X | √ |  | 
+| max_concurrent_runs | big_int | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
 | region | string | X | √ |  | 
-| arn | string | √ | √ |  | 
-| tags | json | X | √ |  | 
-| created_on | timestamp | X | √ |  | 
-| name | string | X | √ |  | 
 
 

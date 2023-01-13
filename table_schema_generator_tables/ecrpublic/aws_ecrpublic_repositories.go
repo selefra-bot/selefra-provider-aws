@@ -44,7 +44,7 @@ func (x *TableAwsEcrpublicRepositoriesGenerator) GetDataSource() *schema.DataSou
 				MaxResults: &maxResults,
 			}
 			c := client.(*aws_client.Client)
-			svc := c.AwsServices().ECRPublic
+			svc := c.AwsServices().Ecrpublic
 			for {
 				output, err := svc.DescribeRepositories(ctx, &config)
 				if err != nil {
@@ -68,19 +68,25 @@ func (x *TableAwsEcrpublicRepositoriesGenerator) GetExpandClientTask() func(ctx 
 
 func (x *TableAwsEcrpublicRepositoriesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("created_at").ColumnType(schema.ColumnTypeTimestamp).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("repository_name").ColumnType(schema.ColumnTypeString).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RepositoryArn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("repository_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RepositoryArn")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("registry_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("repository_uri").ColumnType(schema.ColumnTypeString).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.StructSelector("RepositoryArn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("created_at").ColumnType(schema.ColumnTypeTimestamp).
+			Extractor(column_value_extractor.StructSelector("CreatedAt")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("registry_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RegistryId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("repository_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RepositoryName")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("repository_uri").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RepositoryUri")).Build(),
 	}
 }
 

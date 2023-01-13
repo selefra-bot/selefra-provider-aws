@@ -11,16 +11,16 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
+| region | string | X | √ |  | 
+| tags | json | X | √ |  | 
+| associations | json | X | √ |  | 
+| entries | json | X | √ |  | 
+| vpc_id | string | X | √ |  | 
 | account_id | string | X | √ |  | 
 | arn | string | √ | √ |  | 
-| associations | json | X | √ |  | 
+| is_default | bool | X | √ |  | 
 | network_acl_id | string | X | √ |  | 
 | owner_id | string | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
-| region | string | X | √ |  | 
-| tags | json | X | √ |  | 
-| entries | json | X | √ |  | 
-| is_default | bool | X | √ |  | 
-| vpc_id | string | X | √ |  | 
 
 

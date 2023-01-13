@@ -4,16 +4,16 @@
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
+| tags | json | X | √ |  | 
 | account_id | string | X | √ |  | 
-| region | string | X | √ |  | 
+| description | string | X | √ |  | 
 | id | string | X | √ |  | 
+| name | string | X | √ |  | 
+| target_arns | string_array | X | √ |  | 
+| selefra_id | string | √ | √ | random id | 
+| region | string | X | √ |  | 
+| arn | string | X | √ |  | 
 | status | string | X | √ |  | 
 | status_message | string | X | √ |  | 
-| target_arns | string_array | X | √ |  | 
-| arn | string | X | √ |  | 
-| description | string | X | √ |  | 
-| name | string | X | √ |  | 
-| tags | json | X | √ |  | 
-| selefra_id | string | √ | √ | random id | 
 
 

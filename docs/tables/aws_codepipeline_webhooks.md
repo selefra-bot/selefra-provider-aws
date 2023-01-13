@@ -1,25 +1,18 @@
 # Table: aws_codepipeline_webhooks
 
-## Primary Keys 
-
-```
-arn
-```
-
-
 ## Columns 
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| arn | string | √ | √ |  | 
+| arn | string | X | √ |  | 
+| tags | json | X | √ |  | 
 | definition | json | X | √ |  | 
-| url | string | X | √ |  | 
-| error_code | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
+| last_triggered | timestamp | X | √ |  | 
 | account_id | string | X | √ |  | 
 | region | string | X | √ |  | 
+| url | string | X | √ |  | 
+| error_code | string | X | √ |  | 
 | error_message | string | X | √ |  | 
-| last_triggered | timestamp | X | √ |  | 
-| tags | json | X | √ |  | 
+| selefra_id | string | √ | √ | random id | 
 
 

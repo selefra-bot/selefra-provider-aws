@@ -40,7 +40,7 @@ func (x *TableAwsIotPoliciesGenerator) GetDataSource() *schema.DataSource {
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			cl := client.(*aws_client.Client)
-			svc := cl.AwsServices().IOT
+			svc := cl.AwsServices().Iot
 			input := iot.ListPoliciesInput{
 				PageSize: aws.Int32(250),
 			}
@@ -81,6 +81,10 @@ func (x *TableAwsIotPoliciesGenerator) GetExpandClientTask() func(ctx context.Co
 
 func (x *TableAwsIotPoliciesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
+		table_schema_generator.NewColumnBuilder().ColumnName("policy_arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("PolicyArn")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("policy_name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("PolicyName")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
@@ -90,7 +94,6 @@ func (x *TableAwsIotPoliciesGenerator) GetColumns() []*schema.Column {
 		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("PolicyArn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("policy_name").ColumnType(schema.ColumnTypeString).Build(),
 	}
 }
 

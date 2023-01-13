@@ -11,7 +11,6 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| arn | string | √ | √ |  | 
 | hosted_zone_arn | string | X | √ |  | 
 | cloud_watch_logs_log_group_arn | string | X | √ |  | 
 | hosted_zone_id | string | X | √ |  | 
@@ -19,5 +18,6 @@ arn
 | aws_route53_hosted_zones_selefra_id | string | X | X | fk to aws_route53_hosted_zones.selefra_id | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
 | account_id | string | X | √ |  | 
+| arn | string | √ | √ |  | 
 
 

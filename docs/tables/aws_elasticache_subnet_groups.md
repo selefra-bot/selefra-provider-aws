@@ -1,23 +1,17 @@
 # Table: aws_elasticache_subnet_groups
 
-## Primary Keys 
-
-```
-arn
-```
-
-
 ## Columns 
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| subnets | json | X | √ |  | 
-| vpc_id | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
-| account_id | string | X | √ |  | 
+| selefra_id | string | √ | √ | random id | 
 | region | string | X | √ |  | 
-| arn | string | √ | √ |  | 
-| cache_subnet_group_description | string | X | √ |  | 
 | cache_subnet_group_name | string | X | √ |  | 
+| supported_network_types | string_array | X | √ |  | 
+| vpc_id | string | X | √ |  | 
+| account_id | string | X | √ |  | 
+| arn | string | X | √ |  | 
+| cache_subnet_group_description | string | X | √ |  | 
+| subnets | json | X | √ |  | 
 
 

@@ -3,7 +3,7 @@
 ## Primary Keys 
 
 ```
-account_id, region, id
+account_id, region
 ```
 
 
@@ -11,18 +11,11 @@ account_id, region, id
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| service_role | string | X | √ |  | 
-| created_at | string | X | √ |  | 
-| data_sources | json | X | √ |  | 
-| finding_publishing_frequency | string | X | √ |  | 
-| tags | json | X | √ |  | 
+| id | string | X | √ |  | 
+| get_detector_output | json | X | √ |  | 
+| selefra_id | string | √ | √ | primary keys value md5 | 
 | account_id | string | X | √ |  | 
 | region | string | X | √ |  | 
-| id | string | X | √ |  | 
-| updated_at | string | X | √ |  | 
-| result_metadata | json | X | √ |  | 
 | arn | string | X | √ |  | 
-| status | string | X | √ |  | 
-| selefra_id | string | √ | √ | primary keys value md5 | 
 
 

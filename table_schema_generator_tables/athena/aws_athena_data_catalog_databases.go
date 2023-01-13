@@ -33,7 +33,6 @@ func (x *TableAwsAthenaDataCatalogDatabasesGenerator) GetOptions() *schema.Table
 	return &schema.TableOptions{
 		PrimaryKeys: []string{
 			"data_catalog_arn",
-			"name",
 		},
 	}
 }
@@ -70,19 +69,22 @@ func (x *TableAwsAthenaDataCatalogDatabasesGenerator) GetExpandClientTask() func
 
 func (x *TableAwsAthenaDataCatalogDatabasesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
+		table_schema_generator.NewColumnBuilder().ColumnName("parameters").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Parameters")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("aws_athena_data_catalogs_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_athena_data_catalogs.selefra_id").
+			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
+			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("data_catalog_arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.ParentColumnValue("arn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("parameters").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
-			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("aws_athena_data_catalogs_selefra_id").ColumnType(schema.ColumnTypeString).SetNotNull().Description("fk to aws_athena_data_catalogs.selefra_id").
-			Extractor(column_value_extractor.ParentColumnValue("selefra_id")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("name").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Name")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("description").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("Description")).Build(),
 	}
 }
 

@@ -32,7 +32,6 @@ func (x *TableAwsEcrRegistriesGenerator) GetOptions() *schema.TableOptions {
 		PrimaryKeys: []string{
 			"account_id",
 			"region",
-			"registry_id",
 		},
 	}
 }
@@ -41,7 +40,7 @@ func (x *TableAwsEcrRegistriesGenerator) GetDataSource() *schema.DataSource {
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			c := client.(*aws_client.Client)
-			svc := c.AwsServices().ECR
+			svc := c.AwsServices().Ecr
 			output, err := svc.DescribeRegistry(ctx, &ecr.DescribeRegistryInput{})
 			if err != nil {
 				return schema.NewDiagnosticsErrorPullTable(task.Table, err)
@@ -59,14 +58,18 @@ func (x *TableAwsEcrRegistriesGenerator) GetExpandClientTask() func(ctx context.
 
 func (x *TableAwsEcrRegistriesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("registry_id").ColumnType(schema.ColumnTypeString).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("replication_configuration").ColumnType(schema.ColumnTypeJSON).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsAccountIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("registry_id").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RegistryId")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("replication_configuration").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ReplicationConfiguration")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ResultMetadata")).Build(),
 	}
 }
 

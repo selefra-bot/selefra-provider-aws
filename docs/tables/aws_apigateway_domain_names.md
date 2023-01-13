@@ -11,26 +11,26 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| mutual_tls_authentication | json | X | √ |  | 
-| tags | json | X | √ |  | 
-| certificate_arn | string | X | √ |  | 
-| distribution_hosted_zone_id | string | X | √ |  | 
-| certificate_upload_date | timestamp | X | √ |  | 
-| endpoint_configuration | json | X | √ |  | 
-| ownership_verification_certificate_arn | string | X | √ |  | 
+| certificate_name | string | X | √ |  | 
 | regional_certificate_arn | string | X | √ |  | 
 | regional_hosted_zone_id | string | X | √ |  | 
-| region | string | X | √ |  | 
-| certificate_name | string | X | √ |  | 
-| regional_domain_name | string | X | √ |  | 
-| security_policy | string | X | √ |  | 
+| tags | json | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
+| certificate_arn | string | X | √ |  | 
 | domain_name_status | string | X | √ |  | 
-| regional_certificate_name | string | X | √ |  | 
-| distribution_domain_name | string | X | √ |  | 
-| domain_name | string | X | √ |  | 
-| domain_name_status_message | string | X | √ |  | 
-| account_id | string | X | √ |  | 
+| ownership_verification_certificate_arn | string | X | √ |  | 
 | arn | string | √ | √ |  | 
+| certificate_upload_date | timestamp | X | √ |  | 
+| distribution_domain_name | string | X | √ |  | 
+| distribution_hosted_zone_id | string | X | √ |  | 
+| domain_name_status_message | string | X | √ |  | 
+| regional_certificate_name | string | X | √ |  | 
+| regional_domain_name | string | X | √ |  | 
+| account_id | string | X | √ |  | 
+| region | string | X | √ |  | 
+| domain_name | string | X | √ |  | 
+| endpoint_configuration | json | X | √ |  | 
+| mutual_tls_authentication | json | X | √ |  | 
+| security_policy | string | X | √ |  | 
 
 

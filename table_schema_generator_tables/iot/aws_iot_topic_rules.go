@@ -40,7 +40,7 @@ func (x *TableAwsIotTopicRulesGenerator) GetDataSource() *schema.DataSource {
 	return &schema.DataSource{
 		Pull: func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, resultChannel chan<- any) *schema.Diagnostics {
 			cl := client.(*aws_client.Client)
-			svc := cl.AwsServices().IOT
+			svc := cl.AwsServices().Iot
 			input := iot.ListTopicRulesInput{
 				MaxResults: aws.Int32(250),
 			}
@@ -81,10 +81,12 @@ func (x *TableAwsIotTopicRulesGenerator) GetExpandClientTask() func(ctx context.
 
 func (x *TableAwsIotTopicRulesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+		table_schema_generator.NewColumnBuilder().ColumnName("rule").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("Rule")).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("rule_arn").ColumnType(schema.ColumnTypeString).
 			Extractor(column_value_extractor.StructSelector("RuleArn")).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("rule").ColumnType(schema.ColumnTypeJSON).Build(),
-		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).
+			Extractor(column_value_extractor.StructSelector("ResultMetadata")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("selefra_id").ColumnType(schema.ColumnTypeString).SetUnique().Description("primary keys value md5").
 			Extractor(column_value_extractor.PrimaryKeysID()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("account_id").ColumnType(schema.ColumnTypeString).
@@ -92,6 +94,8 @@ func (x *TableAwsIotTopicRulesGenerator) GetColumns() []*schema.Column {
 		table_schema_generator.NewColumnBuilder().ColumnName("region").ColumnType(schema.ColumnTypeString).
 			Extractor(aws_client.AwsRegionIDExtractor()).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("tags").ColumnType(schema.ColumnTypeJSON).Build(),
+		table_schema_generator.NewColumnBuilder().ColumnName("arn").ColumnType(schema.ColumnTypeString).
+			Extractor(column_value_extractor.StructSelector("RuleArn")).Build(),
 	}
 }
 

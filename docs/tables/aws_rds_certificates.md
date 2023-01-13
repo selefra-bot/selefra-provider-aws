@@ -11,16 +11,17 @@ arn
 
 |  Column Name   |  Data Type  | Uniq | Nullable | Description | 
 |  ----  | ----  | ----  | ----  | ---- | 
-| valid_till | timestamp | X | √ |  | 
 | account_id | string | X | √ |  | 
+| region | string | X | √ |  | 
+| certificate_arn | string | X | √ |  | 
 | customer_override_valid_till | timestamp | X | √ |  | 
+| valid_from | timestamp | X | √ |  | 
+| valid_till | timestamp | X | √ |  | 
+| arn | string | √ | √ |  | 
 | certificate_identifier | string | X | √ |  | 
 | certificate_type | string | X | √ |  | 
 | customer_override | bool | X | √ |  | 
 | thumbprint | string | X | √ |  | 
-| valid_from | timestamp | X | √ |  | 
 | selefra_id | string | √ | √ | primary keys value md5 | 
-| region | string | X | √ |  | 
-| arn | string | √ | √ |  | 
 
 
