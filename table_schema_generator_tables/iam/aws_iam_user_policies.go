@@ -2,6 +2,8 @@ package iam
 
 import (
 	"context"
+	"encoding/json"
+	"net/url"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
@@ -78,7 +80,29 @@ func (x *TableAwsIamUserPoliciesGenerator) GetExpandClientTask() func(ctx contex
 func (x *TableAwsIamUserPoliciesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
 		table_schema_generator.NewColumnBuilder().ColumnName("policy_document").ColumnType(schema.ColumnTypeString).
-			Extractor(column_value_extractor.StructSelector("PolicyDocument")).Build(),
+			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
+				extractor := func() (any, error) {
+					r := result.(*iam.GetUserPolicyOutput)
+
+					decodedDocument, err := url.QueryUnescape(*r.PolicyDocument)
+					if err != nil {
+						return nil, err
+					}
+
+					var document map[string]interface{}
+					err = json.Unmarshal([]byte(decodedDocument), &document)
+					if err != nil {
+						return nil, err
+					}
+					return document, nil
+				}
+				extractResultValue, err := extractor()
+				if err != nil {
+					return nil, schema.NewDiagnostics().AddErrorColumnValueExtractor(task.Table, column, err)
+				} else {
+					return extractResultValue, nil
+				}
+			})).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("result_metadata").ColumnType(schema.ColumnTypeJSON).
 			Extractor(column_value_extractor.StructSelector("ResultMetadata")).Build(),
 		table_schema_generator.NewColumnBuilder().ColumnName("user_id").ColumnType(schema.ColumnTypeString).
