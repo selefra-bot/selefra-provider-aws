@@ -79,7 +79,7 @@ func (x *TableAwsIamUserPoliciesGenerator) GetExpandClientTask() func(ctx contex
 
 func (x *TableAwsIamUserPoliciesGenerator) GetColumns() []*schema.Column {
 	return []*schema.Column{
-		table_schema_generator.NewColumnBuilder().ColumnName("policy_document").ColumnType(schema.ColumnTypeString).
+		table_schema_generator.NewColumnBuilder().ColumnName("policy_document").ColumnType(schema.ColumnTypeJSON).
 			Extractor(column_value_extractor.WrapperExtractFunction(func(ctx context.Context, clientMeta *schema.ClientMeta, client any, task *schema.DataSourcePullTask, row *schema.Row, column *schema.Column, result any) (any, *schema.Diagnostics) {
 				extractor := func() (any, error) {
 					r := result.(*iam.GetUserPolicyOutput)
